@@ -1,4 +1,5 @@
 ﻿using ManageUser.Authentication;
+using ManageUser.Mail;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -23,15 +24,18 @@ namespace ManageUser.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
+        private readonly ISendMailService _sendMailService;
 
         public AuthenticateController(
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ISendMailService sendMailService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
+            _sendMailService = sendMailService;
         }
 
         [HttpPost]
@@ -92,6 +96,15 @@ namespace ManageUser.Controllers
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
+            MailContent content = new MailContent
+            {
+                To = model.Email,
+                Subject = "[Jora] Xác Nhận Email",
+                Body = "<p><strong>Xin chào "+model.Username+"</strong></p>"
+            };
+
+            await _sendMailService.SendMail(content);
+
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
 
@@ -146,12 +159,7 @@ namespace ManageUser.Controllers
             {
                 return BadRequest("Invalid access token or refresh token");
             }
-
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
             string username = principal.Identity.Name;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
             var user = await _userManager.FindByNameAsync(username);
 
