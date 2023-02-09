@@ -101,8 +101,8 @@ namespace ManageUser.Controllers
             MailContent content = new MailContent
             {
                 To = model.Email,
-                Subject = "[Jora] Xác Nhận Email",
-                Body = "<p><strong>Xin chào "+model.Username+ "</strong>, hãy nhấn vào <a href="+ confirmationlink + ">link này</a> để xác nhận địa chỉ email của bạn.</p>"
+                Subject = "[Jora] Xác Nhận Email Đăng Ký Tài Khoản",
+                Body = "<p><strong>Xin chào " + model.Username + "</strong>, hãy nhấn vào <a href=" + confirmationlink + ">link này</a> để xác nhận địa chỉ email của bạn.</p>"
             };
 
             await _sendMailService.SendMail(content);
@@ -124,6 +124,55 @@ namespace ManageUser.Controllers
                 return BadRequest();
             }
 
+        }
+
+        [HttpPost]
+        [Route("resetpassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel model)
+        {
+            var userExists = await _userManager.FindByEmailAsync(model.email);
+            if (userExists != null)
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(userExists);
+                var link = "https://localhost:44350/api/authenticate/confirmresetpassword?";
+                var buillink = link + "&Id=" + userExists.Id + "&token=" + token;
+                MailContent content = new MailContent
+                {
+                    To = userExists.Email,
+                    Subject = "[Jora] Xác Nhận Email Reset Password",
+                    Body = "<p><strong>Xin chào " + userExists.UserName + "</strong>, hãy nhấn vào <a href=" + buillink + ">link này</a> để tạo Password mới cho tài khoản của bạn.</p>"
+                };
+                await _sendMailService.SendMail(content);
+                return Ok(new Response { Status = "Success", Message = "Send Email Reset Password successfully!" });
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost]
+        [Route("confirmresetpassword")]
+        public async Task<IActionResult> ConfirmResetPassword([FromBody] ConfirmResetPassword model)
+        {
+            var user = await _userManager.FindByIdAsync(model.Id);
+            if(user != null)
+            {
+                var result = await _userManager.ResetPasswordAsync(user, model.token, model.newpassword);
+                if (result.Succeeded)
+                {
+                    return Ok(new Response { Status = "Success", Message = "Reset Password successfully!" });
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return NotFound();
+            }
+            
         }
 
         [HttpPost]
