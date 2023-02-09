@@ -42,10 +42,20 @@ namespace ManageUser
                 item.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
             // For Identity  
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            /*services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders();*/
+            services.AddIdentity<ApplicationUser, IdentityRole>(config =>
+            {
+                config.SignIn.RequireConfirmedAccount = false;
+                config.User.RequireUniqueEmail = true;
+                config.Tokens.AuthenticatorIssuer = "JWT";
 
+                // Add this line for Email confirmation
+                config.SignIn.RequireConfirmedEmail = true;
+
+            }).AddDefaultTokenProviders()
+            .AddEntityFrameworkStores<ApplicationDbContext>();
             // Adding Authentication  
             services.AddAuthentication(options =>
             {

@@ -14,6 +14,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace ManageUser.Controllers
 {
@@ -95,17 +96,34 @@ namespace ManageUser.Controllers
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
-
+            var token = HttpUtility.UrlEncode(await _userManager.GenerateEmailConfirmationTokenAsync(user));
+            var confirmationlink = "https://localhost:44350/api/authenticate/ConfirmEmailLink?token=" + token + "&email=" + user.Email;
             MailContent content = new MailContent
             {
                 To = model.Email,
                 Subject = "[Jora] Xác Nhận Email",
-                Body = "<p><strong>Xin chào "+model.Username+"</strong></p>"
+                Body = "<p><strong>Xin chào "+model.Username+ "</strong>, hãy nhấn vào <a href="+ confirmationlink + ">link này</a> để xác nhận địa chỉ email của bạn.</p>"
             };
 
             await _sendMailService.SendMail(content);
 
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+        }
+        [HttpGet]
+        [Route("ConfirmEmailLink")]
+        public async Task<IActionResult> ConfirmEmail(string token, string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                return Ok(new Response { Status = "Success", Message = "User comfirm email successfully!" });
+            }
+            else
+            {
+                return BadRequest();
+            }
+
         }
 
         [HttpPost]
