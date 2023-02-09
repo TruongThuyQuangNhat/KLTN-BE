@@ -27,6 +27,9 @@ namespace ManageUser.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Avatar")
+                        .HasColumnType("text");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
@@ -37,6 +40,9 @@ namespace ManageUser.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("text");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -87,6 +93,54 @@ namespace ManageUser.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("ManageUser.Models.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Content")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FromUserId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("ToRoomId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FromUserId");
+
+                    b.HasIndex("ToRoomId");
+
+                    b.ToTable("Message");
+                });
+
+            modelBuilder.Entity("ManageUser.Models.Room", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("AdminId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdminId");
+
+                    b.ToTable("Room");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -219,6 +273,32 @@ namespace ManageUser.Migrations
                     b.ToTable("UserTokens");
                 });
 
+            modelBuilder.Entity("ManageUser.Models.Message", b =>
+                {
+                    b.HasOne("ManageUser.Authentication.ApplicationUser", "FromUser")
+                        .WithMany("Messages")
+                        .HasForeignKey("FromUserId");
+
+                    b.HasOne("ManageUser.Models.Room", "ToRoom")
+                        .WithMany("Messages")
+                        .HasForeignKey("ToRoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FromUser");
+
+                    b.Navigation("ToRoom");
+                });
+
+            modelBuilder.Entity("ManageUser.Models.Room", b =>
+                {
+                    b.HasOne("ManageUser.Authentication.ApplicationUser", "Admin")
+                        .WithMany("Rooms")
+                        .HasForeignKey("AdminId");
+
+                    b.Navigation("Admin");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -268,6 +348,18 @@ namespace ManageUser.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ManageUser.Authentication.ApplicationUser", b =>
+                {
+                    b.Navigation("Messages");
+
+                    b.Navigation("Rooms");
+                });
+
+            modelBuilder.Entity("ManageUser.Models.Room", b =>
+                {
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }

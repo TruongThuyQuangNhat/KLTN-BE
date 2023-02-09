@@ -1,8 +1,10 @@
 using ManageUser.Authentication;
+using ManageUser.Hubs;
 using ManageUser.Mail;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +25,7 @@ namespace ManageUser
 {
     public class Startup
     {
+        private readonly string _policyName = "CorsPolicy";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -63,7 +66,6 @@ namespace ManageUser
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-
             // Adding Jwt Bearer  
             .AddJwtBearer(options =>
             {
@@ -80,13 +82,39 @@ namespace ManageUser
                     ValidIssuer = Configuration["JWT:ValidIssuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+
+                        // If the request is for our hub...
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            (path.StartsWithSegments("/chatsocket")))
+                        {
+                            // Read the token out of the query string
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
+
+            //Adding Signal
+            services.AddSignalR();
 
             // Adding Mail Service
             services.AddOptions();
             var mailsettings = Configuration.GetSection("MailSettings");
             services.Configure<MailSettings>(mailsettings);
             services.AddTransient<ISendMailService, SendMailService>();
+            services.AddCors(options => options.AddPolicy("CorsPolicy",
+                builder => {
+                    builder.AllowAnyMethod().AllowAnyHeader()
+                    .WithOrigins("http://localhost:4200")
+                    .AllowCredentials();
+                }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.  
@@ -98,13 +126,13 @@ namespace ManageUser
             }
 
             app.UseRouting();
-
+            app.UseCors(_policyName);
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chatsocket");
             });
         }
     }
