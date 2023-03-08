@@ -1,7 +1,5 @@
 ﻿using ManageUser.Authentication;
-using ManageUser.Hubs;
 using ManageUser.Mail;
-using ManageUser.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -29,28 +27,18 @@ namespace ManageUser.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
         private readonly ISendMailService _sendMailService;
-        private readonly IHubContext<ChatHub> _hubContext;
 
         public AuthenticateController(
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IConfiguration configuration,
-            ISendMailService sendMailService,
-            IHubContext<ChatHub> hubContext)
+            ISendMailService sendMailService
+        )
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
             _sendMailService = sendMailService;
-            _hubContext = hubContext;
-        }
-
-        [Route("send")]                                           //path looks like this: https://localhost:44379/api/chat/send
-        [HttpPost]
-        public IActionResult SendRequest([FromBody] MessageDto msg)
-        {
-            _hubContext.Clients.All.SendAsync("ReceiveOne", msg.user, msg.msgText);
-            return Ok();
         }
 
         [HttpPost]
