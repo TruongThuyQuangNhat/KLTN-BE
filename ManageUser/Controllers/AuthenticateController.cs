@@ -85,21 +85,38 @@ namespace ManageUser.Controllers
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
+            if(model.Password != model.RepeatPassword)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Mật khẩu lặp lại không giống nhau!" });
+            }
+
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User Name đã tồn tại!" });
+            }
+
+            var userExistsEmail = await _userManager.FindByEmailAsync(model.Email);
+            if(userExistsEmail != null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Email đã tồn tại!" });
+            }
 
             ApplicationUser user = new()
             {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.Username
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+            }
             var token = HttpUtility.UrlEncode(await _userManager.GenerateEmailConfirmationTokenAsync(user));
-            var confirmationlink = "https://localhost:44350/api/authenticate/ConfirmEmailLink?token=" + token + "&email=" + user.Email;
+            var confirmationlink = "https://localhost:5001/api/authenticate/ConfirmEmailLink?token=" + token + "&email=" + user.Email;
             MailContent content = new MailContent
             {
                 To = model.Email,
@@ -181,20 +198,36 @@ namespace ManageUser.Controllers
         [Route("register-admin")]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
         {
+            if (model.Password != model.RepeatPassword)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Mật khẩu lặp lại không giống nhau!" });
+            }
+
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User Name đã tồn tại!" });
+            }
+
+            var userExistsEmail = await _userManager.FindByEmailAsync(model.Email);
+            if (userExistsEmail != null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Email đã tồn tại!" });
+            }
 
             ApplicationUser user = new()
             {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.Username
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
-
+            }
             if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
             if (!await _roleManager.RoleExistsAsync(UserRoles.User))
@@ -204,10 +237,21 @@ namespace ManageUser.Controllers
             {
                 await _userManager.AddToRoleAsync(user, UserRoles.Admin);
             }
-            if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
+            /*if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
             {
                 await _userManager.AddToRoleAsync(user, UserRoles.User);
-            }
+            }*/
+            /*var token = HttpUtility.UrlEncode(await _userManager.GenerateEmailConfirmationTokenAsync(user));
+            var confirmationlink = "https://localhost:5001/api/authenticate/ConfirmEmailLink?token=" + token + "&email=" + user.Email;
+            MailContent content = new MailContent
+            {
+                To = model.Email,
+                Subject = "[Jora] Xác Nhận Email Đăng Ký Tài Khoản",
+                Body = "<p><strong>Xin chào " + model.Username + "</strong>, hãy nhấn vào <a href=" + confirmationlink + ">link này</a> để xác nhận địa chỉ email của bạn.</p>"
+            };
+
+            await _sendMailService.SendMail(content);*/
+
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
 

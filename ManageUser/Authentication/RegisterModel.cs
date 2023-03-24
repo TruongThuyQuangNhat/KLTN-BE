@@ -8,6 +8,12 @@ namespace ManageUser.Authentication
 {
     public class RegisterModel
     {
+        [Required(ErrorMessage = "First Name is required")]
+        public string FirstName { get; set; }
+
+        [Required(ErrorMessage = "Last Name is required")]
+        public string LastName { get; set; }
+
         [Required(ErrorMessage = "User Name is required")]
         public string Username { get; set; }
 
@@ -17,5 +23,8 @@ namespace ManageUser.Authentication
 
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
+
+        [Required(ErrorMessage = "Repeat Password is required")]
+        public string RepeatPassword { get; set; }
     }
 }
