@@ -10,18 +10,18 @@ namespace ManageUser.Model
     public class UserInfo
     {
         [Key]
-        public string Id { get; set; }
-        public ApplicationUser FromUser { get; set; }
+        public Guid Id { get; set; }
+        public Guid FromUserId { get; set; }
         public string Sex { get; set; }
         public string Address { get; set; }
         public int Age { get; set; }
         public DateTime BirthDay { get; set; }
         public DateTime DateStartWork { get; set; }
-        public ApplicationUser Manager { get; set; }
-        public string DayOffId { get; set; }
-        public string SalaryId { get; set; }
-        public string BonusId { get; set; }
-        public string AdvanceMoneyId { get; set; }
+        public Guid ManagerId { get; set; }
+        public Guid DayOffId { get; set; }
+        public Guid SalaryId { get; set; }
+        public Guid BonusId { get; set; }
+        public Guid AdvanceMoneyId { get; set; }
         public string CCCDNumber { get; set; }
         public DateTime CCCDIssueDate { get; set; }
         public string CCCDAddress { get; set; }
@@ -42,8 +42,8 @@ namespace ManageUser.Model
         public string HDLDNumber { get; set; }
         public DateTime HDLDStartDate { get; set; }
         public DateTime HDLDEndDate { get; set; }
-        public Department Department { get; set; }
-        public string PositionId { get; set; }
+        public Guid DepartmentId { get; set; }
+        public Guid PositionId { get; set; }
         public DateTime CreateOn { get; set; }
         public DateTime ModifyOn { get; set; }
     }

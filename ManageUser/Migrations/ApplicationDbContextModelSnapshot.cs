@@ -117,20 +117,21 @@ namespace ManageUser.Migrations
 
             modelBuilder.Entity("ManageUser.Model.AdvanceMoney", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Approval")
                         .HasColumnType("text");
 
-                    b.Property<string>("ApprovelId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("ApprovelId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreateOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("FromUserId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("FromUserId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("ModifyOn")
                         .HasColumnType("timestamp without time zone");
@@ -140,17 +141,14 @@ namespace ManageUser.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApprovelId");
-
-                    b.HasIndex("FromUserId");
-
                     b.ToTable("AdvanceMoney");
                 });
 
             modelBuilder.Entity("ManageUser.Model.Bonus", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreateOn")
                         .HasColumnType("timestamp without time zone");
@@ -161,8 +159,8 @@ namespace ManageUser.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<string>("FromUserId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("FromUserId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("ModifyOn")
                         .HasColumnType("timestamp without time zone");
@@ -172,21 +170,20 @@ namespace ManageUser.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FromUserId");
-
                     b.ToTable("Bonus");
                 });
 
             modelBuilder.Entity("ManageUser.Model.DayOff", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Approval")
                         .HasColumnType("text");
 
-                    b.Property<string>("ApprovelId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("ApprovelId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreateOn")
                         .HasColumnType("timestamp without time zone");
@@ -194,8 +191,8 @@ namespace ManageUser.Migrations
                     b.Property<DateTime>("DateOff")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("FromUserId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("FromUserId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("HalfDate")
                         .HasColumnType("text");
@@ -205,23 +202,20 @@ namespace ManageUser.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApprovelId");
-
-                    b.HasIndex("FromUserId");
-
                     b.ToTable("DayOff");
                 });
 
             modelBuilder.Entity("ManageUser.Model.Department", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreateOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("ManagerDepartmentId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("ManagerDepartmentId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("ModifyOn")
                         .HasColumnType("timestamp without time zone");
@@ -231,21 +225,20 @@ namespace ManageUser.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ManagerDepartmentId");
-
                     b.ToTable("Department");
                 });
 
             modelBuilder.Entity("ManageUser.Model.SalaryOfMonth", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreateOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("FromUserId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("FromUserId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("FuelAllowance")
                         .HasColumnType("text");
@@ -261,21 +254,20 @@ namespace ManageUser.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FromUserId");
-
                     b.ToTable("SalaryOfMonth");
                 });
 
             modelBuilder.Entity("ManageUser.Model.UserInfo", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Address")
                         .HasColumnType("text");
 
-                    b.Property<string>("AdvanceMoneyId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("AdvanceMoneyId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Age")
                         .HasColumnType("integer");
@@ -316,8 +308,8 @@ namespace ManageUser.Migrations
                     b.Property<DateTime>("BirthDay")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("BonusId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("BonusId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("CCCDAddress")
                         .HasColumnType("text");
@@ -334,14 +326,14 @@ namespace ManageUser.Migrations
                     b.Property<DateTime>("DateStartWork")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("DayOffId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("DayOffId")
+                        .HasColumnType("uuid");
 
-                    b.Property<string>("DepartmentId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("DepartmentId")
+                        .HasColumnType("uuid");
 
-                    b.Property<string>("FromUserId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("FromUserId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("HDLDEndDate")
                         .HasColumnType("timestamp without time zone");
@@ -352,14 +344,14 @@ namespace ManageUser.Migrations
                     b.Property<DateTime>("HDLDStartDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("ManagerId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("ManagerId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("ModifyOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("PositionId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("PositionId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("SLDAddress")
                         .HasColumnType("text");
@@ -370,19 +362,13 @@ namespace ManageUser.Migrations
                     b.Property<string>("SLDNumber")
                         .HasColumnType("text");
 
-                    b.Property<string>("SalaryId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("SalaryId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Sex")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.HasIndex("FromUserId");
-
-                    b.HasIndex("ManagerId");
 
                     b.ToTable("UserInfo");
                 });
@@ -515,84 +501,6 @@ namespace ManageUser.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("UserTokens");
-                });
-
-            modelBuilder.Entity("ManageUser.Model.AdvanceMoney", b =>
-                {
-                    b.HasOne("ManageUser.Authentication.ApplicationUser", "Approvel")
-                        .WithMany()
-                        .HasForeignKey("ApprovelId");
-
-                    b.HasOne("ManageUser.Authentication.ApplicationUser", "FromUser")
-                        .WithMany()
-                        .HasForeignKey("FromUserId");
-
-                    b.Navigation("Approvel");
-
-                    b.Navigation("FromUser");
-                });
-
-            modelBuilder.Entity("ManageUser.Model.Bonus", b =>
-                {
-                    b.HasOne("ManageUser.Authentication.ApplicationUser", "FromUser")
-                        .WithMany()
-                        .HasForeignKey("FromUserId");
-
-                    b.Navigation("FromUser");
-                });
-
-            modelBuilder.Entity("ManageUser.Model.DayOff", b =>
-                {
-                    b.HasOne("ManageUser.Authentication.ApplicationUser", "Approvel")
-                        .WithMany()
-                        .HasForeignKey("ApprovelId");
-
-                    b.HasOne("ManageUser.Authentication.ApplicationUser", "FromUser")
-                        .WithMany()
-                        .HasForeignKey("FromUserId");
-
-                    b.Navigation("Approvel");
-
-                    b.Navigation("FromUser");
-                });
-
-            modelBuilder.Entity("ManageUser.Model.Department", b =>
-                {
-                    b.HasOne("ManageUser.Authentication.ApplicationUser", "ManagerDepartment")
-                        .WithMany()
-                        .HasForeignKey("ManagerDepartmentId");
-
-                    b.Navigation("ManagerDepartment");
-                });
-
-            modelBuilder.Entity("ManageUser.Model.SalaryOfMonth", b =>
-                {
-                    b.HasOne("ManageUser.Authentication.ApplicationUser", "FromUser")
-                        .WithMany()
-                        .HasForeignKey("FromUserId");
-
-                    b.Navigation("FromUser");
-                });
-
-            modelBuilder.Entity("ManageUser.Model.UserInfo", b =>
-                {
-                    b.HasOne("ManageUser.Model.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId");
-
-                    b.HasOne("ManageUser.Authentication.ApplicationUser", "FromUser")
-                        .WithMany()
-                        .HasForeignKey("FromUserId");
-
-                    b.HasOne("ManageUser.Authentication.ApplicationUser", "Manager")
-                        .WithMany()
-                        .HasForeignKey("ManagerId");
-
-                    b.Navigation("Department");
-
-                    b.Navigation("FromUser");
-
-                    b.Navigation("Manager");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -17,6 +17,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -97,6 +98,8 @@ namespace ManageUser
                     .WithOrigins("http://localhost:4200")
                     .AllowCredentials();
                 }));
+            services.Configure<IdentityOptions>(options =>
+                options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.  

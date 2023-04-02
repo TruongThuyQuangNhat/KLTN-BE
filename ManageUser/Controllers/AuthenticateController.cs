@@ -1,5 +1,6 @@
 ﻿using ManageUser.Authentication;
 using ManageUser.Mail;
+using ManageUser.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
