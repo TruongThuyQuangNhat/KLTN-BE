@@ -86,5 +86,38 @@ namespace ManageUser.Controllers
                 return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "Cập nhật thông tin User thành công." });
             }
         }
+
+        [HttpDelete]
+        [Route("delete/{Id}")]
+        public async Task<IActionResult> Delete(string Id)
+        {
+            var userInfo = await _appDbContext.UserInfo.FindAsync(Guid.Parse(Id));
+            if (userInfo == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "Error", Message = "User không tồn tại!" });
+            }
+            else
+            {
+                // CHECK thêm mấy bảng bị phụ thuộc User Info
+                _appDbContext.Remove(userInfo);
+                await _appDbContext.SaveChangesAsync();
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "Xóa thông tin User thành công." });
+            }
+        }
+
+        [HttpGet]
+        [Route("get/{Id}")]
+        public async Task<IActionResult> GetOne(string Id)
+        {
+            var userInfo = await _appDbContext.UserInfo.FindAsync(Guid.Parse(Id));
+            if (userInfo == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "Error", Message = "User không tồn tại!" });
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status200OK, userInfo);
+            }
+        }
     }
 }
