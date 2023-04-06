@@ -3,7 +3,10 @@ using ManageUser.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -118,6 +121,16 @@ namespace ManageUser.Controllers
             {
                 return StatusCode(StatusCodes.Status200OK, userInfo);
             }
+        }
+
+        [HttpGet]
+        [Route("getlist")]
+        public List<UserInfo> GetList()
+        {
+            var userInfo = _appDbContext.UserInfo.SelectMany(
+                    user => _appDbContext.UserInfo
+                ).ToList();
+            return userInfo;
         }
     }
 }
