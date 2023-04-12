@@ -76,6 +76,18 @@ namespace ManageUser.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Position",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Position", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
                 {
@@ -117,11 +129,6 @@ namespace ManageUser.Migrations
                     Age = table.Column<int>(type: "integer", nullable: false),
                     BirthDay = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     DateStartWork = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ManagerId = table.Column<Guid>(type: "uuid", nullable: false),
-                    DayOffId = table.Column<Guid>(type: "uuid", nullable: false),
-                    SalaryId = table.Column<Guid>(type: "uuid", nullable: false),
-                    BonusId = table.Column<Guid>(type: "uuid", nullable: false),
-                    AdvanceMoneyId = table.Column<Guid>(type: "uuid", nullable: false),
                     CCCDNumber = table.Column<string>(type: "text", nullable: true),
                     CCCDIssueDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CCCDAddress = table.Column<string>(type: "text", nullable: true),
@@ -142,8 +149,6 @@ namespace ManageUser.Migrations
                     HDLDNumber = table.Column<string>(type: "text", nullable: true),
                     HDLDStartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     HDLDEndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    DepartmentId = table.Column<Guid>(type: "uuid", nullable: false),
-                    PositionId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreateOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifyOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
@@ -165,6 +170,13 @@ namespace ManageUser.Migrations
                     IsOnline = table.Column<bool>(type: "boolean", nullable: false),
                     ConnectionID = table.Column<string>(type: "text", nullable: true),
                     RoomID = table.Column<string>(type: "text", nullable: true),
+                    DepartmentId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PositionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ManagerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DayOffId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SalaryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    BonusId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AdvanceMoneyId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreateOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifyOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -344,6 +356,9 @@ namespace ManageUser.Migrations
 
             migrationBuilder.DropTable(
                 name: "Department");
+
+            migrationBuilder.DropTable(
+                name: "Position");
 
             migrationBuilder.DropTable(
                 name: "RoleClaims");

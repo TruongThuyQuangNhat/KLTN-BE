@@ -27,8 +27,14 @@ namespace ManageUser.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
+                    b.Property<Guid>("AdvanceMoneyId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Avatar")
                         .HasColumnType("text");
+
+                    b.Property<Guid>("BonusId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -39,6 +45,12 @@ namespace ManageUser.Migrations
 
                     b.Property<DateTime>("CreateOn")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("DayOffId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("DepartmentId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -64,6 +76,9 @@ namespace ManageUser.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("ManagerId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("ModifyOn")
                         .HasColumnType("timestamp without time zone");
 
@@ -84,6 +99,9 @@ namespace ManageUser.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<Guid>("PositionId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("RefreshToken")
                         .HasColumnType("text");
 
@@ -92,6 +110,9 @@ namespace ManageUser.Migrations
 
                     b.Property<string>("RoomID")
                         .HasColumnType("text");
+
+                    b.Property<Guid>("SalaryId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -228,6 +249,20 @@ namespace ManageUser.Migrations
                     b.ToTable("Department");
                 });
 
+            modelBuilder.Entity("ManageUser.Model.Position", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Position");
+                });
+
             modelBuilder.Entity("ManageUser.Model.SalaryOfMonth", b =>
                 {
                     b.Property<Guid>("Id")
@@ -265,9 +300,6 @@ namespace ManageUser.Migrations
 
                     b.Property<string>("Address")
                         .HasColumnType("text");
-
-                    b.Property<Guid>("AdvanceMoneyId")
-                        .HasColumnType("uuid");
 
                     b.Property<int>("Age")
                         .HasColumnType("integer");
@@ -308,9 +340,6 @@ namespace ManageUser.Migrations
                     b.Property<DateTime>("BirthDay")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("BonusId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("CCCDAddress")
                         .HasColumnType("text");
 
@@ -326,12 +355,6 @@ namespace ManageUser.Migrations
                     b.Property<DateTime>("DateStartWork")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("DayOffId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("DepartmentId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("FromUserId")
                         .HasColumnType("uuid");
 
@@ -344,14 +367,8 @@ namespace ManageUser.Migrations
                     b.Property<DateTime>("HDLDStartDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("ManagerId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("ModifyOn")
                         .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("PositionId")
-                        .HasColumnType("uuid");
 
                     b.Property<string>("SLDAddress")
                         .HasColumnType("text");
@@ -361,9 +378,6 @@ namespace ManageUser.Migrations
 
                     b.Property<string>("SLDNumber")
                         .HasColumnType("text");
-
-                    b.Property<Guid>("SalaryId")
-                        .HasColumnType("uuid");
 
                     b.Property<string>("Sex")
                         .HasColumnType("text");

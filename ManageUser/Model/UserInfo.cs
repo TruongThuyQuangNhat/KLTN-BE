@@ -17,11 +17,6 @@ namespace ManageUser.Model
         public int Age { get; set; }
         public DateTime BirthDay { get; set; }
         public DateTime DateStartWork { get; set; }
-        public Guid ManagerId { get; set; }
-        public Guid DayOffId { get; set; }
-        public Guid SalaryId { get; set; }
-        public Guid BonusId { get; set; }
-        public Guid AdvanceMoneyId { get; set; }
         public string CCCDNumber { get; set; }
         public DateTime CCCDIssueDate { get; set; }
         public string CCCDAddress { get; set; }
@@ -42,8 +37,6 @@ namespace ManageUser.Model
         public string HDLDNumber { get; set; }
         public DateTime HDLDStartDate { get; set; }
         public DateTime HDLDEndDate { get; set; }
-        public Guid DepartmentId { get; set; }
-        public Guid PositionId { get; set; }
         public DateTime CreateOn { get; set; }
         public DateTime ModifyOn { get; set; }
     }

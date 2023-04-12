@@ -16,11 +16,6 @@ namespace ManageUser.Authentication
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            /*builder.ApplyConfiguration(new NhanVienMap());
-            builder.ApplyConfiguration(new ChucDanhMap());
-            builder.ApplyConfiguration(new ChucVuMap());
-            builder.ApplyConfiguration(new PhongBanMap());*/
-
             base.OnModelCreating(builder);
             foreach (var entityType in builder.Model.GetEntityTypes())
             {
@@ -32,10 +27,12 @@ namespace ManageUser.Authentication
             }
         }
         public DbSet<UserInfo> UserInfo { get; set; }
+        public DbSet<ApplicationUser> User { get; set; }
         public DbSet<AdvanceMoney> AdvanceMoney { get; set; }
         public DbSet<Bonus> Bonus { get; set; }
         public DbSet<DayOff> DayOff { get; set; }
         public DbSet<Department> Department { get; set; }
         public DbSet<SalaryOfMonth> SalaryOfMonth { get; set; }
+        public DbSet<Position> Position { get; set; }
     }
 }

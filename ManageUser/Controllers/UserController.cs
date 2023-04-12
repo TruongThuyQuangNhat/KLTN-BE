@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Any;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,7 +63,6 @@ namespace ManageUser.Controllers
                 userInfo.Age = model.Age;
                 userInfo.BirthDay = model.BirthDay;
                 userInfo.DateStartWork = model.DateStartWork;
-                userInfo.ManagerId = model.ManagerId;
                 userInfo.CCCDNumber = model.CCCDNumber;
                 userInfo.CCCDIssueDate = model.CCCDIssueDate;
                 userInfo.CCCDAddress = model.CCCDAddress;
@@ -125,12 +125,37 @@ namespace ManageUser.Controllers
 
         [HttpGet]
         [Route("getlist")]
-        public List<UserInfo> GetList()
+        public IEnumerable<response> GetList([FromBody] GridModel model)
         {
-            var userInfo = _appDbContext.UserInfo.SelectMany(
-                    user => _appDbContext.UserInfo
-                ).ToList();
-            return userInfo;
+            var department = _appDbContext.Department.ToList();
+            var position = _appDbContext.Position.ToList();
+            var userList = _appDbContext.Users.ToList();
+            var userInfo = _appDbContext.UserInfo.ToList();
+            var list = from u in userList
+                       join ui in userInfo on u.Id equals ui.FromUserId.ToString()
+                       join de in department on u.DepartmentId equals de.Id
+                       join po in position on u.PositionId equals po.Id
+                       select new response
+                       {
+                           LastName = u.LastName,
+                           FirstName = u.FirstName,
+                           Email = u.Email,
+                           Avatar = u.Avatar,
+                           DepartmentName = de.Name,
+                           PositionName = po.Name
+                       };
+
+            return list;
         }
+    }
+
+    public class response
+    {
+        public string LastName { set; get; }
+        public string FirstName { set; get; }
+        public string Email { set; get; }
+        public string Avatar { set; get; }
+        public string DepartmentName { set; get; }
+        public string PositionName { set; get; }
     }
 }

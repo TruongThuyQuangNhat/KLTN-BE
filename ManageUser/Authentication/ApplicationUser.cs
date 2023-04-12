@@ -19,6 +19,13 @@ namespace ManageUser.Authentication
         public bool IsOnline { get; set; }
         public string ConnectionID { get; set; }
         public string RoomID { get; set; }
+        public Guid DepartmentId { get; set; }
+        public Guid PositionId { get; set; }
+        public Guid ManagerId { get; set; }
+        public Guid DayOffId { get; set; }
+        public Guid SalaryId { get; set; }
+        public Guid BonusId { get; set; }
+        public Guid AdvanceMoneyId { get; set; }
         public DateTime CreateOn { get; set; }
         public DateTime ModifyOn { get; set; }
     }
