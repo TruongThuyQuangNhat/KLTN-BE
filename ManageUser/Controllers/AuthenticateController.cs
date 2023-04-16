@@ -109,7 +109,9 @@ namespace ManageUser.Controllers
                 LastName = model.LastName,
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
+                UserName = model.Username,
+                PositionId = Guid.Parse(model.PositionId),
+                DepartmentId = Guid.Parse(model.DepartmentId)
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)

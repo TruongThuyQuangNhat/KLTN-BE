@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using System.Linq;
 
 namespace ManageUser.Controllers
 {
@@ -75,45 +76,38 @@ namespace ManageUser.Controllers
             }
         }
 
-        /*[HttpGet]
+        [HttpGet]
         [Route("get/{Id}")]
         public async Task<IActionResult> GetOne(string Id)
         {
-            var userInfo = await _appDbContext.UserInfo.FindAsync(Guid.Parse(Id));
-            if (userInfo == null)
+            var department = await _appDbContext.Department.FindAsync(Guid.Parse(Id));
+            if (department == null)
             {
-                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "Error", Message = "User không tồn tại!" });
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "Error", Message = "Phòng Ban không tồn tại!" });
             }
             else
             {
-                return StatusCode(StatusCodes.Status200OK, userInfo);
+                return StatusCode(StatusCodes.Status200OK, department);
             }
         }
 
         [HttpGet]
         [Route("getlist")]
-        public IEnumerable<response> GetList([FromBody] GridModel model)
+        public IEnumerable<Department> GetList([FromBody] GridModel model)
         {
             var department = _appDbContext.Department.ToList();
-            var position = _appDbContext.Position.ToList();
-            var userList = _appDbContext.Users.ToList();
-            var userInfo = _appDbContext.UserInfo.ToList();
-            var list = from u in userList
-                       join ui in userInfo on u.Id equals ui.FromUserId.ToString()
-                       join de in department on u.DepartmentId equals de.Id
-                       join po in position on u.PositionId equals po.Id
-                       select new response
+            var list = from de in department
+                       select new Department()
                        {
-                           LastName = u.LastName,
-                           FirstName = u.FirstName,
-                           Email = u.Email,
-                           Avatar = u.Avatar,
-                           DepartmentName = de.Name,
-                           PositionName = po.Name
+                           Id = de.Id,
+                           Name = de.Name,
+                           CreateOn = de.CreateOn,
+                           ModifyOn = de.ModifyOn,
+                           ManagerDepartmentId = de.ManagerDepartmentId
                        };
 
             return list;
-        }*/
+        }
     }
 
     public class CreateDepartment

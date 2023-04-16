@@ -33,14 +33,13 @@ namespace ManageUser.Controllers
         [Route("create")]
         public async Task<IActionResult> Create([FromBody] UserInfo model)
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var user = await _userManager.FindByIdAsync(model.FromUserId.ToString());
             if (user == null)
             {
                 return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "Error", Message = "User không tồn tại!" });
             } else
             {
                 model.Id = Guid.NewGuid();
-                model.FromUserId = Guid.Parse(user.Id);
                 await _appDbContext.UserInfo.AddAsync(model);
                 await _appDbContext.SaveChangesAsync();
                 return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "Thêm mới User thành công." });
@@ -131,6 +130,14 @@ namespace ManageUser.Controllers
             var position = _appDbContext.Position.ToList();
             var userList = _appDbContext.Users.ToList();
             var userInfo = _appDbContext.UserInfo.ToList();
+            if (!String.IsNullOrEmpty(model.searchText))
+            {
+                userList = userList.Where(u => u.FirstName.Contains(model.searchText) || u.LastName.Contains(model.searchText)).ToList();
+            }
+            if(!String.IsNullOrEmpty(model.srtColumns) && !String.IsNullOrEmpty(model.srtDirections))
+            {
+                userList = userList.OrderBy(u => u.LastName).ToList();
+            }
             var list = from u in userList
                        join ui in userInfo on u.Id equals ui.FromUserId.ToString()
                        join de in department on u.DepartmentId equals de.Id
@@ -144,7 +151,10 @@ namespace ManageUser.Controllers
                            DepartmentName = de.Name,
                            PositionName = po.Name
                        };
-
+            if (model.pageLoading)
+            {
+                list = list.Skip(model.pageSize * model.page).Take(model.pageSize);
+            }
             return list;
         }
     }

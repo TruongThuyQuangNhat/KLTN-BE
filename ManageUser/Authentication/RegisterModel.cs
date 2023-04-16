@@ -26,5 +26,9 @@ namespace ManageUser.Authentication
 
         [Required(ErrorMessage = "Repeat Password is required")]
         public string RepeatPassword { get; set; }
+
+        public string DepartmentId { get; set; }
+
+        public string PositionId { get; set; }
     }
 }
