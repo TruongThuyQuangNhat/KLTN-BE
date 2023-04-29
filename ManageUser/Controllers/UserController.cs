@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Any;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace ManageUser.Controllers
 {
@@ -124,25 +126,61 @@ namespace ManageUser.Controllers
 
         [HttpGet]
         [Route("getlist")]
-        public IEnumerable<response> GetList([FromBody] GridModel model)
+        public response GetList([FromBody] GridModel model)
         {
             var department = _appDbContext.Department.ToList();
             var position = _appDbContext.Position.ToList();
             var userList = _appDbContext.Users.ToList();
             var userInfo = _appDbContext.UserInfo.ToList();
+            if (model.listFilter.Count != 0)
+            {
+                model.listFilter.ForEach(i =>
+                {
+                    switch (i.filterColumns)
+                    {
+                        case "Position":
+                            position = _appDbContext.Position.FromSqlRaw("SELECT * FROM public.\"Position\" WHERE \"Id\""+i.filterDirections+"'"+ i.filterData + "'").ToList();
+                            break;
+                        case "Department":
+                            department = _appDbContext.Department.FromSqlRaw("SELECT * FROM public.\"Department\" WHERE \"Id\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                            break;
+                    }
+                });
+            }
             if (!String.IsNullOrEmpty(model.searchText))
             {
                 userList = userList.Where(u => u.FirstName.Contains(model.searchText) || u.LastName.Contains(model.searchText)).ToList();
             }
             if(!String.IsNullOrEmpty(model.srtColumns) && !String.IsNullOrEmpty(model.srtDirections))
             {
-                userList = userList.OrderBy(u => u.LastName).ToList();
+                switch (model.srtColumns)
+                {
+                    case "FirstName":
+                        if(model.srtDirections == "desc")
+                        {
+                            userList = userList.OrderByDescending(u => u.FirstName).ToList();
+                        } else if(model.srtDirections == "asc")
+                        {
+                            userList = userList.OrderBy(u => u.FirstName).ToList();
+                        }
+                        break;
+                    case "LastName":
+                        if (model.srtDirections == "desc")
+                        {
+                            userList = userList.OrderByDescending(u => u.LastName).ToList();
+                        }
+                        else if (model.srtDirections == "asc")
+                        {
+                            userList = userList.OrderBy(u => u.LastName).ToList();
+                        }
+                        break;
+                }
             }
             var list = from u in userList
                        join ui in userInfo on u.Id equals ui.FromUserId.ToString()
                        join de in department on u.DepartmentId equals de.Id
                        join po in position on u.PositionId equals po.Id
-                       select new response
+                       select new resUser
                        {
                            LastName = u.LastName,
                            FirstName = u.FirstName,
@@ -151,15 +189,34 @@ namespace ManageUser.Controllers
                            DepartmentName = de.Name,
                            PositionName = po.Name
                        };
+            var data = list;
             if (model.pageLoading)
             {
-                list = list.Skip(model.pageSize * model.page).Take(model.pageSize);
+                list = list.Skip(model.pageSize * model.page).Take(model.pageSize).ToList();
             }
-            return list;
+
+            response result = new response()
+            {
+                data = list,
+                dataCount = list.Count(),
+                page = model.page + 1,
+                pageSize = model.pageSize,
+                totalPages = Convert.ToInt32(Math.Ceiling(data.Count() / Convert.ToDouble(model.pageSize)))
+            };
+            return result;
         }
     }
 
     public class response
+    {
+        public IEnumerable<resUser> data { set; get; }
+        public int page { set; get; }
+        public int pageSize { set; get; }
+        public int totalPages { set; get; }
+        public int dataCount { set; get; }
+    }
+
+    public class resUser
     {
         public string LastName { set; get; }
         public string FirstName { set; get; }

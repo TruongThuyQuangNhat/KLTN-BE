@@ -369,5 +369,52 @@ namespace ManageUser.Controllers
             return principal;
 
         }
+
+        [HttpPost]
+        [Route("update")]
+        public async Task<IActionResult> UpdateUser([FromBody] updateUser model)
+        {
+            var user = await _userManager.FindByIdAsync(model.Id);
+            if(user == null)
+            {
+                return NotFound();
+            } else
+            {
+                user.Avatar = model.Avatar;
+                user.FirstName = model.FirstName;
+                user.LastName = model.LastName;
+                user.Email = model.Email;
+                user.PhoneNumber = model.PhoneNumber;
+                await _userManager.UpdateAsync(user);
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "Cập nhật User thành công." });
+            }
+        }
+
+        [HttpPost]
+        [Route("delete/{Id}")]
+        public async Task<IActionResult> DeleteUser(string Id)
+        {
+            var user = await _userManager.FindByIdAsync(Id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                await _userManager.DeleteAsync(user);
+                // check thêm mấy bảng phụ thuộc
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "Xóa User thành công." });
+            }
+        }
+
+        public class updateUser
+        {
+            public string Id { set; get; }
+            public string FirstName { set; get; }
+            public string LastName { set; get; }
+            public string Avatar { set; get; }
+            public string Email { set; get; }
+            public string PhoneNumber { set; get; }
+        }
     }
 }
