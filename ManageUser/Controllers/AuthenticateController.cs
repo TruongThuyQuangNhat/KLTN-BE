@@ -224,7 +224,9 @@ namespace ManageUser.Controllers
                 LastName = model.LastName,
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
+                UserName = model.Username,
+                PositionId = Guid.Parse(model.PositionId),
+                DepartmentId = Guid.Parse(model.DepartmentId)
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
@@ -233,8 +235,10 @@ namespace ManageUser.Controllers
             }
             if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
-            if (!await _roleManager.RoleExistsAsync(UserRoles.User))
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+            if (!await _roleManager.RoleExistsAsync(UserRoles.Employee))
+                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Employee));
+            if (!await _roleManager.RoleExistsAsync(UserRoles.HR))
+                await _roleManager.CreateAsync(new IdentityRole(UserRoles.HR));
 
             if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
             {

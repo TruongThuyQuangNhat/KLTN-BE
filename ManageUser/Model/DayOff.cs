@@ -12,6 +12,7 @@ namespace ManageUser.Model
         public DateTime DateOff { get; set; }
         public string HalfDate { get; set; }
         public string Approval { get; set; }
+        public string Note { get; set; }
         public Guid ApprovelId { get; set; }
         public DateTime CreateOn { get; set; }
         public DateTime ModifyOn { get; set; }

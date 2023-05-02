@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Any;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -132,6 +133,8 @@ namespace ManageUser.Controllers
             var position = _appDbContext.Position.ToList();
             var userList = _appDbContext.Users.ToList();
             var userInfo = _appDbContext.UserInfo.ToList();
+            var userRoles = _appDbContext.UserRoles.ToList();
+            var roles = _appDbContext.Roles.ToList();
             if (model.listFilter.Count != 0)
             {
                 model.listFilter.ForEach(i =>
@@ -180,6 +183,8 @@ namespace ManageUser.Controllers
                        join ui in userInfo on u.Id equals ui.FromUserId.ToString()
                        join de in department on u.DepartmentId equals de.Id
                        join po in position on u.PositionId equals po.Id
+                       join ur in userRoles on u.Id equals ur.UserId
+                       join r in roles on ur.RoleId equals r.Id
                        select new resUser
                        {
                            LastName = u.LastName,
@@ -187,7 +192,8 @@ namespace ManageUser.Controllers
                            Email = u.Email,
                            Avatar = u.Avatar,
                            DepartmentName = de.Name,
-                           PositionName = po.Name
+                           PositionName = po.Name,
+                           Roles = r.Name
                        };
             var data = list;
             if (model.pageLoading)
@@ -224,5 +230,6 @@ namespace ManageUser.Controllers
         public string Avatar { set; get; }
         public string DepartmentName { set; get; }
         public string PositionName { set; get; }
+        public string Roles { set; get; }
     }
 }

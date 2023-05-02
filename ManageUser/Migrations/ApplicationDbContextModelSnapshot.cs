@@ -221,6 +221,9 @@ namespace ManageUser.Migrations
                     b.Property<DateTime>("ModifyOn")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<string>("Note")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("DayOff");

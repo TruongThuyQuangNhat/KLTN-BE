@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ManageUser.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230411153627_Initial")]
+    [Migration("20230502105203_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -222,6 +222,9 @@ namespace ManageUser.Migrations
 
                     b.Property<DateTime>("ModifyOn")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

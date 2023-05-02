@@ -51,6 +51,7 @@ namespace ManageUser.Migrations
                     DateOff = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     HalfDate = table.Column<string>(type: "text", nullable: true),
                     Approval = table.Column<string>(type: "text", nullable: true),
+                    Note = table.Column<string>(type: "text", nullable: true),
                     ApprovelId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreateOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifyOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
