@@ -127,7 +127,7 @@ namespace ManageUser.Controllers
 
         [HttpGet]
         [Route("getlist")]
-        public response GetList([FromBody] GridModel model)
+        public response<resUser> GetList([FromBody] GridModel model)
         {
             var department = _appDbContext.Department.ToList();
             var position = _appDbContext.Position.ToList();
@@ -187,6 +187,7 @@ namespace ManageUser.Controllers
                        join r in roles on ur.RoleId equals r.Id
                        select new resUser
                        {
+                           Id = u.Id,
                            LastName = u.LastName,
                            FirstName = u.FirstName,
                            Email = u.Email,
@@ -201,7 +202,7 @@ namespace ManageUser.Controllers
                 list = list.Skip(model.pageSize * model.page).Take(model.pageSize).ToList();
             }
 
-            response result = new response()
+            response<resUser> result = new response<resUser>()
             {
                 data = list,
                 dataCount = list.Count(),
@@ -213,9 +214,9 @@ namespace ManageUser.Controllers
         }
     }
 
-    public class response
+    public class response<T>
     {
-        public IEnumerable<resUser> data { set; get; }
+        public IEnumerable<T> data { set; get; }
         public int page { set; get; }
         public int pageSize { set; get; }
         public int totalPages { set; get; }
@@ -224,6 +225,7 @@ namespace ManageUser.Controllers
 
     public class resUser
     {
+        public string Id { set; get; }
         public string LastName { set; get; }
         public string FirstName { set; get; }
         public string Email { set; get; }

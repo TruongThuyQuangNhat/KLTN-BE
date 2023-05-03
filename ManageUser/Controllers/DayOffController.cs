@@ -102,7 +102,7 @@ namespace ManageUser.Controllers
 
         [HttpGet]
         [Route("getlist")]
-        public IEnumerable<DayOff> GetList([FromBody] GridModel model)
+        public response<DayOff> GetList([FromBody] GridModel model)
         {
             var dayOff = _appDbContext.DayOff.ToList();
             if (model.listFilter.Count != 0)
@@ -155,8 +155,21 @@ namespace ManageUser.Controllers
                         break;
                 }
             }
+            var data = dayOff;
+            if (model.pageLoading)
+            {
+                dayOff = dayOff.Skip(model.pageSize * model.page).Take(model.pageSize).ToList();
+            }
 
-            return dayOff;
+            response<DayOff> result = new response<DayOff>()
+            {
+                data = dayOff,
+                dataCount = dayOff.Count(),
+                page = model.page + 1,
+                pageSize = model.pageSize,
+                totalPages = Convert.ToInt32(Math.Ceiling(data.Count() / Convert.ToDouble(model.pageSize)))
+            };
+            return result;
         }
 
         public class CreateModel
@@ -174,10 +187,8 @@ namespace ManageUser.Controllers
             public Guid FromUserId { get; set; }
             public DateTime DateOff { get; set; }
             public string HalfDate { get; set; }
-            public string Approval { get; set; }
             public string Note { get; set; }
             public Guid ApprovelId { get; set; }
-            public DateTime ModifyOn { get; set; }
         }
     }
 }
