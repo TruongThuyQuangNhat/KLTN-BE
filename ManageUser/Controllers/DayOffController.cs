@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace ManageUser.Controllers
 {
@@ -63,6 +64,23 @@ namespace ManageUser.Controllers
             _appDbContext.Update(dayOff);
             await _appDbContext.SaveChangesAsync();
             return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "Cập nhật thông tin Ngày Nghỉ thành công." });
+        }
+
+        [HttpPut]
+        [Route("approval")]
+        public async Task<IActionResult> Approval([FromBody] ApprovalModel model)
+        {
+            var dayOff = await _appDbContext.DayOff.FindAsync(model.Id);
+            if (dayOff == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "Error", Message = "Ngày Nghỉ không tồn tại!" });
+            }
+
+            dayOff.Approval = model.status;
+            dayOff.ModifyOn = DateTime.Now;
+            _appDbContext.Update(dayOff);
+            await _appDbContext.SaveChangesAsync();
+            return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "Cập nhật trạng thái Ngày Nghỉ thành công." });
         }
 
         [HttpDelete]
@@ -189,6 +207,13 @@ namespace ManageUser.Controllers
             public string HalfDate { get; set; }
             public string Note { get; set; }
             public Guid ApprovelId { get; set; }
+        }
+
+        public class ApprovalModel
+        {
+            public Guid Id { get; set; }
+            [RegularExpression("^(1|2|3)$")]
+            public string status { get; set; }
         }
     }
 }

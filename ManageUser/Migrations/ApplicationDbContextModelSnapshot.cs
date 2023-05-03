@@ -142,6 +142,9 @@ namespace ManageUser.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("AdvanceDate")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("Approval")
                         .HasColumnType("text");
 
@@ -158,6 +161,9 @@ namespace ManageUser.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Money")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Note")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -289,6 +295,12 @@ namespace ManageUser.Migrations
 
                     b.Property<string>("Money")
                         .HasColumnType("text");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("SalaryDate")
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 

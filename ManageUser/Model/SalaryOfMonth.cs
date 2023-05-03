@@ -12,6 +12,8 @@ namespace ManageUser.Model
         public string Money { get; set; }
         public string FuelAllowance { get; set; }
         public string LunchAllowance { get; set; }
+        public DateTime SalaryDate { get; set; }
+        public string Note { get; set; }
         public DateTime CreateOn { get; set; }
         public DateTime ModifyOn { get; set; }
     }

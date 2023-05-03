@@ -16,6 +16,8 @@ namespace ManageUser.Migrations
                     FromUserId = table.Column<Guid>(type: "uuid", nullable: false),
                     Approval = table.Column<string>(type: "text", nullable: true),
                     ApprovelId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AdvanceDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Note = table.Column<string>(type: "text", nullable: true),
                     Money = table.Column<string>(type: "text", nullable: true),
                     CreateOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifyOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
@@ -111,6 +113,8 @@ namespace ManageUser.Migrations
                     Money = table.Column<string>(type: "text", nullable: true),
                     FuelAllowance = table.Column<string>(type: "text", nullable: true),
                     LunchAllowance = table.Column<string>(type: "text", nullable: true),
+                    SalaryDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Note = table.Column<string>(type: "text", nullable: true),
                     CreateOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifyOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
