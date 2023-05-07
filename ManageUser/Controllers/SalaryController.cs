@@ -32,8 +32,6 @@ namespace ManageUser.Controllers
             sa.Money = model.Money;
             sa.FuelAllowance = model.FuelAllowance;
             sa.LunchAllowance = model.LunchAllowance;
-            sa.Note = model.Note;
-            sa.SalaryDate = model.SalaryDate;
             sa.CreateOn = DateTime.Now;
             sa.ModifyOn = DateTime.Now;
             await _appDbContext.SalaryOfMonth.AddAsync(sa);
@@ -52,12 +50,9 @@ namespace ManageUser.Controllers
             }
             else
             {
-                sa.FromUserId = model.FromUserId;
                 sa.Money = model.Money;
                 sa.FuelAllowance = model.FuelAllowance;
                 sa.LunchAllowance = model.LunchAllowance;
-                sa.Note = model.Note;
-                sa.SalaryDate = model.SalaryDate;
                 sa.ModifyOn = DateTime.Now;
                 _appDbContext.Update(sa);
                 await _appDbContext.SaveChangesAsync();
@@ -97,9 +92,10 @@ namespace ManageUser.Controllers
 
         [HttpGet]
         [Route("getlist")]
-        public response<SalaryOfMonth> GetList([FromBody] GridModel model)
+        public response<ListSalary> GetList([FromBody] GridModel model)
         {
             var sa = _appDbContext.SalaryOfMonth.ToList();
+            var users = _appDbContext.User.ToList();
             if (model.listFilter.Count != 0)
             {
                 model.listFilter.ForEach(i =>
@@ -115,24 +111,19 @@ namespace ManageUser.Controllers
                         case "LunchAllowance":
                             sa = _appDbContext.SalaryOfMonth.FromSqlRaw("SELECT * FROM public.\"SalaryOfMonth\" WHERE \"LunchAllowance\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
                             break;
-                        case "SalaryDate":
-                            sa = _appDbContext.SalaryOfMonth.FromSqlRaw("SELECT * FROM public.\"SalaryOfMonth\" WHERE \"SalaryDate\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
                         case "Money":
                             sa = _appDbContext.SalaryOfMonth.FromSqlRaw("SELECT * FROM public.\"SalaryOfMonth\" WHERE \"Money\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "FromDate":
-                            sa = _appDbContext.SalaryOfMonth.FromSqlRaw("SELECT * FROM public.\"SalaryOfMonth\" WHERE \"SalaryDate\" >= '" + i.filterData + "'").ToList();
-                            break;
-                        case "ToDate":
-                            sa = _appDbContext.SalaryOfMonth.FromSqlRaw("SELECT * FROM public.\"SalaryOfMonth\" WHERE \"SalaryDate\" <= '" + i.filterData + "'").ToList();
                             break;
                     }
                 });
             }
             if (!String.IsNullOrEmpty(model.searchText))
             {
-                sa = sa.Where(u => u.Note.Contains(model.searchText)).ToList();
+                sa = (from s in sa
+                     join u in users on s.FromUserId.ToString() equals u.Id
+                     where u.FirstName.Contains(model.searchText) || u.LastName.Contains(model.searchText)
+                     select s).ToList();
+                //sa = sa.Where(u => u.Note.Contains(model.searchText)).ToList();
             }
             if (!String.IsNullOrEmpty(model.srtColumns) && !String.IsNullOrEmpty(model.srtDirections))
             {
@@ -150,19 +141,32 @@ namespace ManageUser.Controllers
                         break;
                 }
             }
-            var data = sa;
+            var data = (from s in sa
+                        join u in users on s.FromUserId.ToString() equals u.Id
+                        select new ListSalary()
+                        {
+                            Id = s.Id,
+                            FromUserId = s.FromUserId,
+                            Avatar = u.Avatar,
+                            FirstName = u.FirstName,
+                            LastName = u.LastName,
+                            Money = s.Money,
+                            FuelAllowance = s.FuelAllowance,
+                            LunchAllowance = s.LunchAllowance
+                        }).ToList();
+            var dataCount = data;
             if (model.pageLoading)
             {
-                sa = sa.Skip(model.pageSize * model.page).Take(model.pageSize).ToList();
+                data = data.Skip(model.pageSize * model.page).Take(model.pageSize).ToList();
             }
 
-            response<SalaryOfMonth> result = new response<SalaryOfMonth>()
+            response<ListSalary> result = new response<ListSalary>()
             {
-                data = sa,
-                dataCount = sa.Count(),
+                data = data,
+                dataCount = data.Count(),
                 page = model.page + 1,
                 pageSize = model.pageSize,
-                totalPages = Convert.ToInt32(Math.Ceiling(data.Count() / Convert.ToDouble(model.pageSize)))
+                totalPages = Convert.ToInt32(Math.Ceiling(dataCount.Count() / Convert.ToDouble(model.pageSize)))
             };
             return result;
         }
@@ -173,20 +177,26 @@ namespace ManageUser.Controllers
             public string Money { get; set; }
             public string FuelAllowance { get; set; }
             public string LunchAllowance { get; set; }
-            public DateTime SalaryDate { get; set; }
-            public string Note { get; set; }
         }
 
         public class UpdateSalary
         {
             public Guid Id { get; set; }
-            public Guid FromUserId { get; set; }
             public string Money { get; set; }
             public string FuelAllowance { get; set; }
             public string LunchAllowance { get; set; }
-            public DateTime SalaryDate { get; set; }
-            public string Note { get; set; }
-            public DateTime AdvanceDate { get; set; }
+        }
+
+        public class ListSalary
+        {
+            public Guid Id { get; set; }
+            public Guid FromUserId { get; set; }
+            public string Avatar { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string Money { get; set; }
+            public string FuelAllowance { get; set; }
+            public string LunchAllowance { get; set; }
         }
     }
 }

@@ -36,6 +36,7 @@ namespace ManageUser.Controllers
             dayOff.Approval = "1";
             dayOff.ApprovelId = model.ApprovelId;
             dayOff.Note = model.Note;
+            dayOff.SabbaticalDayOff = model.SabbaticalDayOff;
             dayOff.CreateOn = DateTime.Now;
             dayOff.ModifyOn = DateTime.Now;
             await _appDbContext.DayOff.AddAsync(dayOff);
@@ -60,6 +61,7 @@ namespace ManageUser.Controllers
             dayOff.DateOff = model.DateOff;
             dayOff.HalfDate = model.HalfDate;
             dayOff.Note = model.Note;
+            dayOff.SabbaticalDayOff = model.SabbaticalDayOff;
             dayOff.ModifyOn = DateTime.Now;
             _appDbContext.Update(dayOff);
             await _appDbContext.SaveChangesAsync();
@@ -197,6 +199,7 @@ namespace ManageUser.Controllers
             public string HalfDate { get; set; }
             public string Note { get; set; }
             public Guid ApprovelId { get; set; }
+            public bool SabbaticalDayOff { get; set; }
         }
 
         public class UpdateModel
@@ -207,6 +210,7 @@ namespace ManageUser.Controllers
             public string HalfDate { get; set; }
             public string Note { get; set; }
             public Guid ApprovelId { get; set; }
+            public bool SabbaticalDayOff { get; set; }
         }
 
         public class ApprovalModel

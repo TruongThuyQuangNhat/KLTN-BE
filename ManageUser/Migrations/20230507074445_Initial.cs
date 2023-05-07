@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -55,6 +56,7 @@ namespace ManageUser.Migrations
                     Approval = table.Column<string>(type: "text", nullable: true),
                     Note = table.Column<string>(type: "text", nullable: true),
                     ApprovelId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SabbaticalDayOff = table.Column<bool>(type: "boolean", nullable: false),
                     CreateOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifyOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
@@ -76,6 +78,28 @@ namespace ManageUser.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Department", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HistoryOfSalary",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    FromDayOff = table.Column<List<Guid>>(type: "uuid[]", nullable: true),
+                    FromBonus = table.Column<List<Guid>>(type: "uuid[]", nullable: true),
+                    FromAdvance = table.Column<List<Guid>>(type: "uuid[]", nullable: true),
+                    FromUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SalaryDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Note = table.Column<string>(type: "text", nullable: true),
+                    Money = table.Column<string>(type: "text", nullable: true),
+                    FuelAllowance = table.Column<string>(type: "text", nullable: true),
+                    LunchAllowance = table.Column<string>(type: "text", nullable: true),
+                    CreateOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ModifyOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HistoryOfSalary", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -113,8 +137,6 @@ namespace ManageUser.Migrations
                     Money = table.Column<string>(type: "text", nullable: true),
                     FuelAllowance = table.Column<string>(type: "text", nullable: true),
                     LunchAllowance = table.Column<string>(type: "text", nullable: true),
-                    SalaryDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    Note = table.Column<string>(type: "text", nullable: true),
                     CreateOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifyOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
@@ -361,6 +383,9 @@ namespace ManageUser.Migrations
 
             migrationBuilder.DropTable(
                 name: "Department");
+
+            migrationBuilder.DropTable(
+                name: "HistoryOfSalary");
 
             migrationBuilder.DropTable(
                 name: "Position");

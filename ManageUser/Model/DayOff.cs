@@ -14,6 +14,7 @@ namespace ManageUser.Model
         public string Approval { get; set; }
         public string Note { get; set; }
         public Guid ApprovelId { get; set; }
+        public bool SabbaticalDayOff { get; set; }
         public DateTime CreateOn { get; set; }
         public DateTime ModifyOn { get; set; }
     }
