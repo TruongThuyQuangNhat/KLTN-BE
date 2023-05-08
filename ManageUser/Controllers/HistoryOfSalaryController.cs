@@ -29,8 +29,8 @@ namespace ManageUser.Controllers
         [Route("create")]
         public async Task<IActionResult> Create([FromBody] CreateHistorySalary model)
         {
-            string Month = model.Date.ToString("MM");
-            string Year = model.Date.ToString("yyyy");
+            string Month = model.Date.Month.ToString();
+            string Year = model.Date.Year.ToString();
             var user = await _appDbContext.User.FindAsync(model.Id);
             if(user == null)
             {
@@ -42,18 +42,18 @@ namespace ManageUser.Controllers
                 return NotFound("Salary không tồn tại");
             }
             var dayOff = _appDbContext.DayOff.Where(i => 
-                i.FromUserId.ToString() == user.Id && 
-                i.DateOff.ToString("MM") == Month && 
-                i.DateOff.ToString("yyyy") == Year &&
-                i.Approval == "3").ToList();
+                i.FromUserId.ToString().Equals(user.Id) && 
+                i.DateOff.Month.ToString().Equals(Month) && 
+                i.DateOff.Year.ToString().Equals(Year) &&
+                i.Approval.Equals("3")).ToList();
             var bonus = _appDbContext.Bonus.Where(i => 
                 i.FromUserId.ToString() == user.Id && 
-                i.DateBonus.ToString("MM") == Month && 
-                i.DateBonus.ToString("yyyy") == Year).ToList();
+                i.DateBonus.Month.ToString() == Month && 
+                i.DateBonus.Year.ToString() == Year).ToList();
             var advanceMoney  = _appDbContext.AdvanceMoney.Where(i => 
                 i.FromUserId.ToString() == user.Id && 
-                i.AdvanceDate.ToString("MM") == Month && 
-                i.AdvanceDate.ToString("yyyy") == Year &&
+                i.AdvanceDate.Month.ToString() == Month && 
+                i.AdvanceDate.Year.ToString() == Year &&
                 i.Approval == "3").ToList();
 
             double money = double.Parse(salary.Money);
@@ -100,6 +100,8 @@ namespace ManageUser.Controllers
             data.LunchAllowance = salary.LunchAllowance;
             data.CreateOn = DateTime.Now;
             data.ModifyOn = DateTime.Now;
+            await _appDbContext.HistoryOfSalary.AddAsync(data);
+            await _appDbContext.SaveChangesAsync();
             return StatusCode(StatusCodes.Status200OK, data);
         }
 
