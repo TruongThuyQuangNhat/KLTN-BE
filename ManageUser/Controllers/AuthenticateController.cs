@@ -129,7 +129,19 @@ namespace ManageUser.Controllers
 
             await _sendMailService.SendMail(content);
 
-            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+            if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
+                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
+            if (!await _roleManager.RoleExistsAsync(UserRoles.Employee))
+                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Employee));
+            if (!await _roleManager.RoleExistsAsync(UserRoles.HR))
+                await _roleManager.CreateAsync(new IdentityRole(UserRoles.HR));
+
+            if (await _roleManager.RoleExistsAsync(UserRoles.Employee))
+            {
+                await _userManager.AddToRoleAsync(user, UserRoles.Employee);
+            }
+
+            return Ok(new { Status = "Success", Message = "User created successfully!", Data = user });
         }
         [HttpGet]
         [Route("ConfirmEmailLink")]
@@ -259,7 +271,7 @@ namespace ManageUser.Controllers
 
             await _sendMailService.SendMail(content);*/
 
-            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+            return Ok(new { Status = "Success", Message = "User created successfully!", Data = user });
         }
 
         [HttpPost]
