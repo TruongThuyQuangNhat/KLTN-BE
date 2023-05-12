@@ -90,7 +90,7 @@ namespace ManageUser.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("getlist")]
         public response<ListSalary> GetList([FromBody] GridModel model)
         {
@@ -166,7 +166,8 @@ namespace ManageUser.Controllers
                 dataCount = data.Count(),
                 page = model.page + 1,
                 pageSize = model.pageSize,
-                totalPages = Convert.ToInt32(Math.Ceiling(dataCount.Count() / Convert.ToDouble(model.pageSize)))
+                totalPages = Convert.ToInt32(Math.Ceiling(dataCount.Count() / Convert.ToDouble(model.pageSize))),
+                totalCount = dataCount.Count()
             };
             return result;
         }

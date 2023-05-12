@@ -85,7 +85,7 @@ namespace ManageUser.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("getlist")]
         public IEnumerable<Position> GetList([FromBody] GridModel model)
         {

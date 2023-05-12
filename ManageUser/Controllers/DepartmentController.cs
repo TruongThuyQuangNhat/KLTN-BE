@@ -91,7 +91,7 @@ namespace ManageUser.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("getlist")]
         public IEnumerable<Department> GetList([FromBody] GridModel model)
         {

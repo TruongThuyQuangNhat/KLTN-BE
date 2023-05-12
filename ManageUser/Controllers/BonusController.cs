@@ -96,7 +96,7 @@ namespace ManageUser.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("getlist")]
         public response<Bonus> GetList([FromBody] GridModel model)
         {
@@ -157,7 +157,8 @@ namespace ManageUser.Controllers
                 dataCount = bonus.Count(),
                 page = model.page + 1,
                 pageSize = model.pageSize,
-                totalPages = Convert.ToInt32(Math.Ceiling(data.Count() / Convert.ToDouble(model.pageSize)))
+                totalPages = Convert.ToInt32(Math.Ceiling(data.Count() / Convert.ToDouble(model.pageSize))),
+                totalCount = data.Count()
             };
             return result;
         }

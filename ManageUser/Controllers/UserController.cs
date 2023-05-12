@@ -125,7 +125,7 @@ namespace ManageUser.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("getlist")]
         public response<resUser> GetList([FromBody] GridModel model)
         {
@@ -208,7 +208,8 @@ namespace ManageUser.Controllers
                 dataCount = list.Count(),
                 page = model.page + 1,
                 pageSize = model.pageSize,
-                totalPages = Convert.ToInt32(Math.Ceiling(data.Count() / Convert.ToDouble(model.pageSize)))
+                totalPages = Convert.ToInt32(Math.Ceiling(data.Count() / Convert.ToDouble(model.pageSize))),
+                totalCount = data.Count()
             };
             return result;
         }
@@ -220,6 +221,7 @@ namespace ManageUser.Controllers
         public int page { set; get; }
         public int pageSize { set; get; }
         public int totalPages { set; get; }
+        public int totalCount { set; get; }
         public int dataCount { set; get; }
     }
 
