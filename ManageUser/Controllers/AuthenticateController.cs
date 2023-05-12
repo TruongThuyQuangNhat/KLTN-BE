@@ -2,16 +2,20 @@
 using ManageUser.Mail;
 using ManageUser.Model;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -28,18 +32,21 @@ namespace ManageUser.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
         private readonly ISendMailService _sendMailService;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
         public AuthenticateController(
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IConfiguration configuration,
-            ISendMailService sendMailService
+            ISendMailService sendMailService,
+            IWebHostEnvironment hostingEnvironment
         )
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
             _sendMailService = sendMailService;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpPost]
@@ -420,6 +427,56 @@ namespace ManageUser.Controllers
                 await _userManager.DeleteAsync(user);
                 // check thêm mấy bảng phụ thuộc
                 return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "Xóa User thành công." });
+            }
+        }
+
+        [HttpPost]
+        [Route("upload")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> UploadFile()
+        {
+            if (!Request.Form.Files.Any())
+                return BadRequest("No files found in the request");
+
+            if (Request.Form.Files.Count > 1)
+                return BadRequest("Cannot upload more than one file at a time");
+
+            if (Request.Form.Files[0].Length <= 0)
+                return BadRequest("Invalid file length, seems to be empty");
+
+            try
+            {
+                string webRootPath = _hostingEnvironment.WebRootPath;
+                string uploadsDir = Path.Combine(webRootPath, "images");
+
+                // wwwroot/uploads/
+                if (!Directory.Exists(uploadsDir))
+                    Directory.CreateDirectory(uploadsDir);
+
+                IFormFile file = Request.Form.Files[0];
+                string fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                Random rnd = new Random();
+                string random = rnd.Next(11111111, 99999999).ToString();
+                string fullPath = Path.Combine(uploadsDir, random + fileName);
+
+                var buffer = 1024 * 1024;
+                using var stream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, buffer, useAsync: false);
+                await file.CopyToAsync(stream);
+                await stream.FlushAsync();
+
+                string location = $"images/{random + fileName}";
+
+                var result = new
+                {
+                    message = "Upload successful",
+                    url = location
+                };
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Upload failed: " + ex.Message);
             }
         }
 

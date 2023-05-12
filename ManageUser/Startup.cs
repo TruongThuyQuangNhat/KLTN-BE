@@ -10,12 +10,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -37,6 +39,11 @@ namespace ManageUser
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers().AddNewtonsoftJson();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Project Manage User", Version = "v1" });
+            });
 
             // For Entity Framework 
             services.AddDbContext<ApplicationDbContext>(item =>
@@ -114,6 +121,16 @@ namespace ManageUser
             app.UseCors(_policyName);
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseStaticFiles();
+            string uploadsDir = Path.Combine(env.WebRootPath, "images");
+            if (!Directory.Exists(uploadsDir))
+                Directory.CreateDirectory(uploadsDir);
+
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                RequestPath = "/images",
+                FileProvider = new PhysicalFileProvider(uploadsDir)
+            });
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
