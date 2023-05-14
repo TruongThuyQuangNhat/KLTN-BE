@@ -439,17 +439,15 @@ namespace ManageUser.Controllers
                 BasicUser result = new BasicUser();
                 result.Id = user.Id;
                 result.Avatar = user.Avatar;
-                result.AdvanceMoneyId = user.AdvanceMoneyId;
-                result.DayOffId = user.DayOffId;
                 result.DepartmentId = user.DepartmentId;
                 result.FirstName = user.FirstName;
                 result.LastName = user.LastName;
                 result.Email = user.Email;
-                result.BonusId = user.BonusId;
                 result.ManagerId = user.ManagerId;
                 result.PositionId = user.PositionId;
                 result.SalaryId = user.SalaryId;
                 result.UserName = user.UserName;
+                result.PhoneNumber = user.PhoneNumber;
                 return StatusCode(StatusCodes.Status200OK, result);
             }
         }
@@ -542,12 +540,10 @@ namespace ManageUser.Controllers
             public Guid DepartmentId { set; get; }
             public Guid PositionId { set; get; }
             public Guid ManagerId { set; get; }
-            public Guid DayOffId { set; get; }
             public Guid SalaryId { set; get; }
-            public Guid BonusId { set; get; }
-            public Guid AdvanceMoneyId { set; get; }
             public string UserName { set; get; }
             public string Email { set; get; }
+            public string PhoneNumber { set; get; }
         }
     }
 }
