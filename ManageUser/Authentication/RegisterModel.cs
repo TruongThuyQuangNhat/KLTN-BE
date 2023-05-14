@@ -30,5 +30,7 @@ namespace ManageUser.Authentication
         public string DepartmentId { get; set; }
 
         public string PositionId { get; set; }
+
+        public string Avatar { get; set; }
     }
 }

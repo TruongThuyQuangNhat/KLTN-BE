@@ -87,9 +87,13 @@ namespace ManageUser.Controllers
 
         [HttpPost]
         [Route("getlist")]
-        public IEnumerable<Position> GetList([FromBody] GridModel model)
+        public response<Position> GetList([FromBody] GridModel model)
         {
             var position = _appDbContext.Position.ToList();
+            if (!String.IsNullOrEmpty(model.searchText))
+            {
+                position = position.Where(u => u.Name.Contains(model.searchText)).ToList();
+            }
             var list = from po in position
                        select new Position()
                        {
@@ -97,7 +101,22 @@ namespace ManageUser.Controllers
                            Name = po.Name
                        };
 
-            return list;
+            var data = list;
+            if (model.pageLoading)
+            {
+                list = list.Skip(model.pageSize * model.page).Take(model.pageSize).ToList();
+            }
+
+            response<Position> result = new response<Position>()
+            {
+                data = list,
+                dataCount = list.Count(),
+                page = model.page + 1,
+                pageSize = model.pageSize,
+                totalPages = Convert.ToInt32(Math.Ceiling(data.Count() / Convert.ToDouble(model.pageSize))),
+                totalCount = data.Count()
+            };
+            return result;
         }
     }
 }

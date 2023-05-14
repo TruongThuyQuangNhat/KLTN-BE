@@ -93,20 +93,40 @@ namespace ManageUser.Controllers
 
         [HttpPost]
         [Route("getlist")]
-        public IEnumerable<Department> GetList([FromBody] GridModel model)
+        public response<resDepartment> GetList([FromBody] GridModel model)
         {
             var department = _appDbContext.Department.ToList();
+            var users = _appDbContext.User.ToList();
+            if (!String.IsNullOrEmpty(model.searchText))
+            {
+                department = department.Where(u => u.Name.Contains(model.searchText)).ToList();
+            }
             var list = from de in department
-                       select new Department()
+                       join u in users on de.ManagerDepartmentId equals Guid.Parse(u.Id)
+                       select new resDepartment()
                        {
                            Id = de.Id,
                            Name = de.Name,
-                           CreateOn = de.CreateOn,
-                           ModifyOn = de.ModifyOn,
-                           ManagerDepartmentId = de.ManagerDepartmentId
+                           Avatar = u.Avatar,
+                           Manager = u.LastName + " " + u.FirstName
                        };
 
-            return list;
+            var data = list;
+            if (model.pageLoading)
+            {
+                list = list.Skip(model.pageSize * model.page).Take(model.pageSize).ToList();
+            }
+
+            response<resDepartment> result = new response<resDepartment>()
+            {
+                data = list,
+                dataCount = list.Count(),
+                page = model.page + 1,
+                pageSize = model.pageSize,
+                totalPages = Convert.ToInt32(Math.Ceiling(data.Count() / Convert.ToDouble(model.pageSize))),
+                totalCount = data.Count()
+            };
+            return result;
         }
     }
 
@@ -121,5 +141,13 @@ namespace ManageUser.Controllers
         public string Id { get; set; }
         public string Name { get; set; }
         public string ManagerDepartmentId { get; set; }
+    }
+
+    public class resDepartment
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Avatar { get; set; }
+        public string Manager { get; set; }
     }
 }

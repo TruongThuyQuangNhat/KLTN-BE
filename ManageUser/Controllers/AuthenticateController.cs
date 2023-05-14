@@ -33,13 +33,15 @@ namespace ManageUser.Controllers
         private readonly IConfiguration _configuration;
         private readonly ISendMailService _sendMailService;
         private readonly IWebHostEnvironment _hostingEnvironment;
+        private readonly ApplicationDbContext _appDbContext;
 
         public AuthenticateController(
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IConfiguration configuration,
             ISendMailService sendMailService,
-            IWebHostEnvironment hostingEnvironment
+            IWebHostEnvironment hostingEnvironment,
+            ApplicationDbContext appDbContext
         )
         {
             _userManager = userManager;
@@ -47,6 +49,7 @@ namespace ManageUser.Controllers
             _configuration = configuration;
             _sendMailService = sendMailService;
             _hostingEnvironment = hostingEnvironment;
+            _appDbContext = appDbContext;
         }
 
         [HttpPost]
@@ -118,8 +121,14 @@ namespace ManageUser.Controllers
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.Username,
                 PositionId = Guid.Parse(model.PositionId),
-                DepartmentId = Guid.Parse(model.DepartmentId)
+                DepartmentId = Guid.Parse(model.DepartmentId),
+                Avatar = model.Avatar
             };
+            UserInfo ui = new UserInfo();
+            ui.Id = Guid.NewGuid();
+            ui.FromUserId = Guid.Parse(user.Id);
+            await _appDbContext.UserInfo.AddAsync(ui);
+            await _appDbContext.SaveChangesAsync();
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
             {
@@ -245,7 +254,8 @@ namespace ManageUser.Controllers
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.Username,
                 PositionId = Guid.Parse(model.PositionId),
-                DepartmentId = Guid.Parse(model.DepartmentId)
+                DepartmentId = Guid.Parse(model.DepartmentId),
+                Avatar = model.Avatar
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
