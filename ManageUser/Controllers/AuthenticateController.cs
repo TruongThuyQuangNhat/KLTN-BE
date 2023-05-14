@@ -418,8 +418,39 @@ namespace ManageUser.Controllers
                 user.LastName = model.LastName;
                 user.Email = model.Email;
                 user.PhoneNumber = model.PhoneNumber;
+                user.DepartmentId = Guid.Parse(model.DepartmentId);
+                user.PositionId = Guid.Parse(model.PositionId);
                 await _userManager.UpdateAsync(user);
                 return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "Cập nhật User thành công." });
+            }
+        }
+
+        [HttpGet]
+        [Route("get/{Id}")]
+        public async Task<IActionResult> GetUser(string Id)
+        {
+            var user = await _userManager.FindByIdAsync(Id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                BasicUser result = new BasicUser();
+                result.Id = user.Id;
+                result.Avatar = user.Avatar;
+                result.AdvanceMoneyId = user.AdvanceMoneyId;
+                result.DayOffId = user.DayOffId;
+                result.DepartmentId = user.DepartmentId;
+                result.FirstName = user.FirstName;
+                result.LastName = user.LastName;
+                result.Email = user.Email;
+                result.BonusId = user.BonusId;
+                result.ManagerId = user.ManagerId;
+                result.PositionId = user.PositionId;
+                result.SalaryId = user.SalaryId;
+                result.UserName = user.UserName;
+                return StatusCode(StatusCodes.Status200OK, result);
             }
         }
 
@@ -498,6 +529,25 @@ namespace ManageUser.Controllers
             public string Avatar { set; get; }
             public string Email { set; get; }
             public string PhoneNumber { set; get; }
+            public string DepartmentId { set; get; }
+            public string PositionId { set; get; }
+        }
+
+        public class BasicUser
+        {
+            public string Id { set; get; }
+            public string FirstName { set; get; }
+            public string LastName { set; get; }
+            public string Avatar { set; get; }
+            public Guid DepartmentId { set; get; }
+            public Guid PositionId { set; get; }
+            public Guid ManagerId { set; get; }
+            public Guid DayOffId { set; get; }
+            public Guid SalaryId { set; get; }
+            public Guid BonusId { set; get; }
+            public Guid AdvanceMoneyId { set; get; }
+            public string UserName { set; get; }
+            public string Email { set; get; }
         }
     }
 }
