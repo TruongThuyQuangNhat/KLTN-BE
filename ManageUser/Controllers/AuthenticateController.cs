@@ -122,7 +122,8 @@ namespace ManageUser.Controllers
                 UserName = model.Username,
                 PositionId = Guid.Parse(model.PositionId),
                 DepartmentId = Guid.Parse(model.DepartmentId),
-                Avatar = model.Avatar
+                Avatar = model.Avatar,
+                PhoneNumber = model.PhoneNumber,
             };
             UserInfo ui = new UserInfo();
             ui.Id = Guid.NewGuid();
@@ -255,7 +256,8 @@ namespace ManageUser.Controllers
                 UserName = model.Username,
                 PositionId = Guid.Parse(model.PositionId),
                 DepartmentId = Guid.Parse(model.DepartmentId),
-                Avatar = model.Avatar
+                Avatar = model.Avatar,
+                PhoneNumber = model.PhoneNumber
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
