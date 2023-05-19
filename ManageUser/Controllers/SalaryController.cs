@@ -100,20 +100,23 @@ namespace ManageUser.Controllers
             {
                 model.listFilter.ForEach(i =>
                 {
-                    switch (i.filterColumns)
+                    if (!String.IsNullOrEmpty(i.filterDirections) && !String.IsNullOrEmpty(i.filterData))
                     {
-                        case "FromUserId":
-                            sa = _appDbContext.SalaryOfMonth.FromSqlRaw("SELECT * FROM public.\"SalaryOfMonth\" WHERE \"FromUserId\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "FuelAllowance":
-                            sa = _appDbContext.SalaryOfMonth.FromSqlRaw("SELECT * FROM public.\"SalaryOfMonth\" WHERE \"FuelAllowance\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "LunchAllowance":
-                            sa = _appDbContext.SalaryOfMonth.FromSqlRaw("SELECT * FROM public.\"SalaryOfMonth\" WHERE \"LunchAllowance\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "Money":
-                            sa = _appDbContext.SalaryOfMonth.FromSqlRaw("SELECT * FROM public.\"SalaryOfMonth\" WHERE \"Money\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
+                        switch (i.filterColumns)
+                        {
+                            case "FromUserId":
+                                sa = _appDbContext.SalaryOfMonth.FromSqlRaw("SELECT * FROM public.\"SalaryOfMonth\" WHERE \"FromUserId\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "FuelAllowance":
+                                sa = _appDbContext.SalaryOfMonth.FromSqlRaw("SELECT * FROM public.\"SalaryOfMonth\" WHERE \"FuelAllowance\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "LunchAllowance":
+                                sa = _appDbContext.SalaryOfMonth.FromSqlRaw("SELECT * FROM public.\"SalaryOfMonth\" WHERE \"LunchAllowance\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "Money":
+                                sa = _appDbContext.SalaryOfMonth.FromSqlRaw("SELECT * FROM public.\"SalaryOfMonth\" WHERE \"Money\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                        }
                     }
                 });
             }

@@ -105,24 +105,27 @@ namespace ManageUser.Controllers
             {
                 model.listFilter.ForEach(i =>
                 {
-                    switch (i.filterColumns)
+                    if (!String.IsNullOrEmpty(i.filterDirections) && !String.IsNullOrEmpty(i.filterData))
                     {
-                        case "FromUserId":
-                            bonus = _appDbContext.Bonus.FromSqlRaw("SELECT * FROM public.\"Bonus\" WHERE \"FromUserId\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "DateBonus":
-                            bonus = _appDbContext.Bonus.FromSqlRaw("SELECT * FROM public.\"Bonus\" WHERE \"DateBonus\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "Money":
-                            bonus = _appDbContext.Bonus.FromSqlRaw("SELECT * FROM public.\"Bonus\" WHERE \"Money\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "FromDate":
-                            bonus = _appDbContext.Bonus.FromSqlRaw("SELECT * FROM public.\"Bonus\" WHERE \"DateBonus\" >= '" + i.filterData + "'").ToList();
-                            break;
-                        case "ToDate":
-                            bonus = _appDbContext.Bonus.FromSqlRaw("SELECT * FROM public.\"Bonus\" WHERE \"DateBonus\" <= '" + i.filterData + "'").ToList();
-                            break;
-                    }
+                        switch (i.filterColumns)
+                        {
+                            case "FromUserId":
+                                bonus = _appDbContext.Bonus.FromSqlRaw("SELECT * FROM public.\"Bonus\" WHERE \"FromUserId\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "DateBonus":
+                                bonus = _appDbContext.Bonus.FromSqlRaw("SELECT * FROM public.\"Bonus\" WHERE \"DateBonus\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "Money":
+                                bonus = _appDbContext.Bonus.FromSqlRaw("SELECT * FROM public.\"Bonus\" WHERE \"Money\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "FromDate":
+                                bonus = _appDbContext.Bonus.FromSqlRaw("SELECT * FROM public.\"Bonus\" WHERE \"DateBonus\" >= '" + i.filterData + "'").ToList();
+                                break;
+                            case "ToDate":
+                                bonus = _appDbContext.Bonus.FromSqlRaw("SELECT * FROM public.\"Bonus\" WHERE \"DateBonus\" <= '" + i.filterData + "'").ToList();
+                                break;
+                        }
+                    } 
                 });
             }
             if (!String.IsNullOrEmpty(model.searchText))

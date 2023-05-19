@@ -191,20 +191,23 @@ namespace ManageUser.Controllers
             {
                 model.listFilter.ForEach(i =>
                 {
-                    switch (i.filterColumns)
+                    if (!String.IsNullOrEmpty(i.filterDirections) && !String.IsNullOrEmpty(i.filterData))
                     {
-                        case "FromUserId":
-                            sa = _appDbContext.HistoryOfSalary.FromSqlRaw("SELECT * FROM public.\"HistoryOfSalary\" WHERE \"FromUserId\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "FuelAllowance":
-                            sa = _appDbContext.HistoryOfSalary.FromSqlRaw("SELECT * FROM public.\"HistoryOfSalary\" WHERE \"FuelAllowance\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "LunchAllowance":
-                            sa = _appDbContext.HistoryOfSalary.FromSqlRaw("SELECT * FROM public.\"HistoryOfSalary\" WHERE \"LunchAllowance\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "Money":
-                            sa = _appDbContext.HistoryOfSalary.FromSqlRaw("SELECT * FROM public.\"HistoryOfSalary\" WHERE \"Money\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
+                        switch (i.filterColumns)
+                        {
+                            case "FromUserId":
+                                sa = _appDbContext.HistoryOfSalary.FromSqlRaw("SELECT * FROM public.\"HistoryOfSalary\" WHERE \"FromUserId\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "FuelAllowance":
+                                sa = _appDbContext.HistoryOfSalary.FromSqlRaw("SELECT * FROM public.\"HistoryOfSalary\" WHERE \"FuelAllowance\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "LunchAllowance":
+                                sa = _appDbContext.HistoryOfSalary.FromSqlRaw("SELECT * FROM public.\"HistoryOfSalary\" WHERE \"LunchAllowance\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "Money":
+                                sa = _appDbContext.HistoryOfSalary.FromSqlRaw("SELECT * FROM public.\"HistoryOfSalary\" WHERE \"Money\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                        }
                     }
                 });
             }

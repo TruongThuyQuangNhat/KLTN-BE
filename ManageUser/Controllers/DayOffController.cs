@@ -129,29 +129,32 @@ namespace ManageUser.Controllers
             {
                 model.listFilter.ForEach(i =>
                 {
-                    switch (i.filterColumns)
+                    if (!String.IsNullOrEmpty(i.filterDirections) && !String.IsNullOrEmpty(i.filterData))
                     {
-                        case "FromUserId":
-                            dayOff = _appDbContext.DayOff.FromSqlRaw("SELECT * FROM public.\"DayOff\" WHERE \"FromUserId\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "ApprovelId":
-                            dayOff = _appDbContext.DayOff.FromSqlRaw("SELECT * FROM public.\"DayOff\" WHERE \"ApprovelId\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "DateOff":
-                            dayOff = _appDbContext.DayOff.FromSqlRaw("SELECT * FROM public.\"DayOff\" WHERE \"DateOff\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "HalfDate":
-                            dayOff = _appDbContext.DayOff.FromSqlRaw("SELECT * FROM public.\"DayOff\" WHERE \"HalfDate\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "Approval":
-                            dayOff = _appDbContext.DayOff.FromSqlRaw("SELECT * FROM public.\"DayOff\" WHERE \"Approval\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "FromDate":
-                            dayOff = _appDbContext.DayOff.FromSqlRaw("SELECT * FROM public.\"DayOff\" WHERE \"DateOff\" >= '" + i.filterData + "'").ToList();
-                            break;
-                        case "ToDate":
-                            dayOff = _appDbContext.DayOff.FromSqlRaw("SELECT * FROM public.\"DayOff\" WHERE \"DateOff\" <= '" + i.filterData + "'").ToList();
-                            break;
+                        switch (i.filterColumns)
+                        {
+                            case "FromUserId":
+                                dayOff = _appDbContext.DayOff.FromSqlRaw("SELECT * FROM public.\"DayOff\" WHERE \"FromUserId\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "ApprovelId":
+                                dayOff = _appDbContext.DayOff.FromSqlRaw("SELECT * FROM public.\"DayOff\" WHERE \"ApprovelId\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "DateOff":
+                                dayOff = _appDbContext.DayOff.FromSqlRaw("SELECT * FROM public.\"DayOff\" WHERE \"DateOff\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "HalfDate":
+                                dayOff = _appDbContext.DayOff.FromSqlRaw("SELECT * FROM public.\"DayOff\" WHERE \"HalfDate\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "Approval":
+                                dayOff = _appDbContext.DayOff.FromSqlRaw("SELECT * FROM public.\"DayOff\" WHERE \"Approval\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "FromDate":
+                                dayOff = _appDbContext.DayOff.FromSqlRaw("SELECT * FROM public.\"DayOff\" WHERE \"DateOff\" >= '" + i.filterData + "'").ToList();
+                                break;
+                            case "ToDate":
+                                dayOff = _appDbContext.DayOff.FromSqlRaw("SELECT * FROM public.\"DayOff\" WHERE \"DateOff\" <= '" + i.filterData + "'").ToList();
+                                break;
+                        }
                     }
                 });
             }

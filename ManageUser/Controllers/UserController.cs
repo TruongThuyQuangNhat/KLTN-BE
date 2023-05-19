@@ -139,14 +139,17 @@ namespace ManageUser.Controllers
             {
                 model.listFilter.ForEach(i =>
                 {
-                    switch (i.filterColumns)
+                    if(!String.IsNullOrEmpty(i.filterDirections) && !String.IsNullOrEmpty(i.filterData))
                     {
-                        case "Position":
-                            position = _appDbContext.Position.FromSqlRaw("SELECT * FROM public.\"Position\" WHERE \"Id\""+i.filterDirections+"'"+ i.filterData + "'").ToList();
-                            break;
-                        case "Department":
-                            department = _appDbContext.Department.FromSqlRaw("SELECT * FROM public.\"Department\" WHERE \"Id\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
+                        switch (i.filterColumns)
+                        {
+                            case "Position":
+                                position = _appDbContext.Position.FromSqlRaw("SELECT * FROM public.\"Position\" WHERE \"Id\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "Department":
+                                department = _appDbContext.Department.FromSqlRaw("SELECT * FROM public.\"Department\" WHERE \"Id\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                        }
                     }
                 });
             }

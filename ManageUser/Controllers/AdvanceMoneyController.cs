@@ -125,29 +125,32 @@ namespace ManageUser.Controllers
             {
                 model.listFilter.ForEach(i =>
                 {
-                    switch (i.filterColumns)
+                    if (!String.IsNullOrEmpty(i.filterDirections) && !String.IsNullOrEmpty(i.filterData))
                     {
-                        case "FromUserId":
-                            ad = _appDbContext.AdvanceMoney.FromSqlRaw("SELECT * FROM public.\"AdvanceMoney\" WHERE \"FromUserId\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "Approval":
-                            ad = _appDbContext.AdvanceMoney.FromSqlRaw("SELECT * FROM public.\"AdvanceMoney\" WHERE \"Approval\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "ApprovelId":
-                            ad = _appDbContext.AdvanceMoney.FromSqlRaw("SELECT * FROM public.\"AdvanceMoney\" WHERE \"ApprovelId\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "AdvanceDate":
-                            ad = _appDbContext.AdvanceMoney.FromSqlRaw("SELECT * FROM public.\"AdvanceMoney\" WHERE \"AdvanceDate\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "Money":
-                            ad = _appDbContext.AdvanceMoney.FromSqlRaw("SELECT * FROM public.\"AdvanceMoney\" WHERE \"Money\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
-                            break;
-                        case "FromDate":
-                            ad = _appDbContext.AdvanceMoney.FromSqlRaw("SELECT * FROM public.\"AdvanceMoney\" WHERE \"AdvanceDate\" >= '" + i.filterData + "'").ToList();
-                            break;
-                        case "ToDate":
-                            ad = _appDbContext.AdvanceMoney.FromSqlRaw("SELECT * FROM public.\"AdvanceMoney\" WHERE \"AdvanceDate\" <= '" + i.filterData + "'").ToList();
-                            break;
+                        switch (i.filterColumns)
+                        {
+                            case "FromUserId":
+                                ad = _appDbContext.AdvanceMoney.FromSqlRaw("SELECT * FROM public.\"AdvanceMoney\" WHERE \"FromUserId\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "Approval":
+                                ad = _appDbContext.AdvanceMoney.FromSqlRaw("SELECT * FROM public.\"AdvanceMoney\" WHERE \"Approval\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "ApprovelId":
+                                ad = _appDbContext.AdvanceMoney.FromSqlRaw("SELECT * FROM public.\"AdvanceMoney\" WHERE \"ApprovelId\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "AdvanceDate":
+                                ad = _appDbContext.AdvanceMoney.FromSqlRaw("SELECT * FROM public.\"AdvanceMoney\" WHERE \"AdvanceDate\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "Money":
+                                ad = _appDbContext.AdvanceMoney.FromSqlRaw("SELECT * FROM public.\"AdvanceMoney\" WHERE \"Money\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
+                                break;
+                            case "FromDate":
+                                ad = _appDbContext.AdvanceMoney.FromSqlRaw("SELECT * FROM public.\"AdvanceMoney\" WHERE \"AdvanceDate\" >= '" + i.filterData + "'").ToList();
+                                break;
+                            case "ToDate":
+                                ad = _appDbContext.AdvanceMoney.FromSqlRaw("SELECT * FROM public.\"AdvanceMoney\" WHERE \"AdvanceDate\" <= '" + i.filterData + "'").ToList();
+                                break;
+                        }
                     }
                 });
             }
