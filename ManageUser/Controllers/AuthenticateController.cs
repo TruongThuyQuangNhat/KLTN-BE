@@ -454,7 +454,7 @@ namespace ManageUser.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpDelete]
         [Route("delete/{Id}")]
         public async Task<IActionResult> DeleteUser(string Id)
         {
@@ -465,9 +465,21 @@ namespace ManageUser.Controllers
             }
             else
             {
-                await _userManager.DeleteAsync(user);
-                // check thêm mấy bảng phụ thuộc
-                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "Xóa User thành công." });
+                var advance = _appDbContext.AdvanceMoney.Where(i => i.FromUserId == Guid.Parse(user.Id)).ToList();
+                var bonus = _appDbContext.Bonus.Where(i => i.FromUserId == Guid.Parse(user.Id)).ToList();
+                var dayOff = _appDbContext.DayOff.Where(i => i.FromUserId == Guid.Parse(user.Id)).ToList();
+                var his = _appDbContext.HistoryOfSalary.Where(i => i.FromUserId == Guid.Parse(user.Id)).ToList();
+                var dep = _appDbContext.Department.Where(i => i.ManagerDepartmentId == Guid.Parse(user.Id)).ToList();
+                var salary = _appDbContext.SalaryOfMonth.Where(i => i.FromUserId == Guid.Parse(user.Id)).ToList();
+                if(advance.Count() > 0 || bonus.Count() > 0 || dayOff.Count() > 0 || his.Count() > 0 || dep.Count() > 0 || salary.Count() > 0)
+                {
+                    return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "User đã sinh dữ liệu, không thể xóa." });
+                } else {
+                    var ui = _appDbContext.UserInfo.Where(i => i.FromUserId == Guid.Parse(user.Id)).FirstOrDefault();
+                    _appDbContext.UserInfo.Remove(ui);
+                    await _userManager.DeleteAsync(user);
+                    return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "Xóa User thành công." });
+                }
             }
         }
 
