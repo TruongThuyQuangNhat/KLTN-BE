@@ -152,9 +152,12 @@ namespace ManageUser.Controllers
             }
             if (!String.IsNullOrEmpty(model.searchText))
             {
-                userList = userList.Where(u => u.FirstName.Contains(model.searchText) || u.LastName.Contains(model.searchText)).ToList();
+                userList = userList.Where(u => u.FirstName.ToLower().Contains(model.searchText.ToLower()) || u.LastName.ToLower().Contains(model.searchText.ToLower())).ToList();
             }
-            if(!String.IsNullOrEmpty(model.srtColumns) && !String.IsNullOrEmpty(model.srtDirections))
+
+            userList = userList.OrderBy(u => u.CreateOn).ToList();
+
+            if (!String.IsNullOrEmpty(model.srtColumns) && !String.IsNullOrEmpty(model.srtDirections))
             {
                 switch (model.srtColumns)
                 {

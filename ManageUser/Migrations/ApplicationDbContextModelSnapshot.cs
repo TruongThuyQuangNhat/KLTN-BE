@@ -28,14 +28,8 @@ namespace ManageUser.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("AdvanceMoneyId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Avatar")
                         .HasColumnType("text");
-
-                    b.Property<Guid>("BonusId")
-                        .HasColumnType("uuid");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -46,9 +40,6 @@ namespace ManageUser.Migrations
 
                     b.Property<DateTime>("CreateOn")
                         .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("DayOffId")
-                        .HasColumnType("uuid");
 
                     b.Property<Guid>("DepartmentId")
                         .HasColumnType("uuid");

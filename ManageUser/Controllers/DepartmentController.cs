@@ -102,13 +102,13 @@ namespace ManageUser.Controllers
                 department = department.Where(u => u.Name.Contains(model.searchText)).ToList();
             }
             var list = from de in department
-                       join u in users on de.ManagerDepartmentId equals Guid.Parse(u.Id)
+                       /*join u in users on de.ManagerDepartmentId equals Guid.Parse(u.Id)*/
                        select new resDepartment()
                        {
                            Id = de.Id,
                            Name = de.Name,
-                           Avatar = u.Avatar,
-                           Manager = u.LastName + " " + u.FirstName
+                           Avatar = "u.Avatar",
+                           Manager = "u.LastName  u.FirstName"
                        };
 
             var data = list;

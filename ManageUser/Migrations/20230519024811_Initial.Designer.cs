@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ManageUser.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230507074445_Initial")]
+    [Migration("20230519024811_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,14 +30,8 @@ namespace ManageUser.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("AdvanceMoneyId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Avatar")
                         .HasColumnType("text");
-
-                    b.Property<Guid>("BonusId")
-                        .HasColumnType("uuid");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -48,9 +42,6 @@ namespace ManageUser.Migrations
 
                     b.Property<DateTime>("CreateOn")
                         .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("DayOffId")
-                        .HasColumnType("uuid");
 
                     b.Property<Guid>("DepartmentId")
                         .HasColumnType("uuid");

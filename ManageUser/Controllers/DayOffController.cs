@@ -157,7 +157,7 @@ namespace ManageUser.Controllers
             }
             if (!String.IsNullOrEmpty(model.searchText))
             {
-                dayOff = dayOff.Where(u => u.Note.Contains(model.searchText)).ToList();
+                dayOff = dayOff.Where(u => u.Note.ToLower().Contains(model.searchText.ToLower())).ToList();
             }
             if (!String.IsNullOrEmpty(model.srtColumns) && !String.IsNullOrEmpty(model.srtDirections))
             {

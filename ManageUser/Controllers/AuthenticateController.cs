@@ -124,17 +124,19 @@ namespace ManageUser.Controllers
                 DepartmentId = Guid.Parse(model.DepartmentId),
                 Avatar = model.Avatar,
                 PhoneNumber = model.PhoneNumber,
+                CreateOn = DateTime.Now,
             };
-            UserInfo ui = new UserInfo();
-            ui.Id = Guid.NewGuid();
-            ui.FromUserId = Guid.Parse(user.Id);
-            await _appDbContext.UserInfo.AddAsync(ui);
-            await _appDbContext.SaveChangesAsync();
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
             }
+            UserInfo ui = new UserInfo();
+            ui.Id = Guid.NewGuid();
+            ui.FromUserId = Guid.Parse(user.Id);
+            await _appDbContext.UserInfo.AddAsync(ui);
+            await _appDbContext.SaveChangesAsync();
+
             var token = HttpUtility.UrlEncode(await _userManager.GenerateEmailConfirmationTokenAsync(user));
             var confirmationlink = "https://localhost:5001/api/authenticate/ConfirmEmailLink?token=" + token + "&email=" + user.Email;
             MailContent content = new MailContent
@@ -257,7 +259,8 @@ namespace ManageUser.Controllers
                 PositionId = Guid.Parse(model.PositionId),
                 DepartmentId = Guid.Parse(model.DepartmentId),
                 Avatar = model.Avatar,
-                PhoneNumber = model.PhoneNumber
+                PhoneNumber = model.PhoneNumber,
+                CreateOn = DateTime.Now,
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
@@ -422,6 +425,7 @@ namespace ManageUser.Controllers
                 user.PhoneNumber = model.PhoneNumber;
                 user.DepartmentId = Guid.Parse(model.DepartmentId);
                 user.PositionId = Guid.Parse(model.PositionId);
+                user.ModifyOn = DateTime.Now;
                 await _userManager.UpdateAsync(user);
                 return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "Cập nhật User thành công." });
             }

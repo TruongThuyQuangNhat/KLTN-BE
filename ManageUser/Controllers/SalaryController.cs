@@ -121,7 +121,7 @@ namespace ManageUser.Controllers
             {
                 sa = (from s in sa
                      join u in users on s.FromUserId.ToString() equals u.Id
-                     where u.FirstName.Contains(model.searchText) || u.LastName.Contains(model.searchText)
+                     where u.FirstName.ToLower().Contains(model.searchText.ToLower()) || u.LastName.ToLower().Contains(model.searchText.ToLower())
                      select s).ToList();
                 //sa = sa.Where(u => u.Note.Contains(model.searchText)).ToList();
             }

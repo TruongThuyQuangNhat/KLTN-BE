@@ -127,7 +127,7 @@ namespace ManageUser.Controllers
             }
             if (!String.IsNullOrEmpty(model.searchText))
             {
-                bonus = bonus.Where(u => u.Description.Contains(model.searchText)).ToList();
+                bonus = bonus.Where(u => u.Description.ToLower().Contains(model.searchText.ToLower())).ToList();
             }
             if (!String.IsNullOrEmpty(model.srtColumns) && !String.IsNullOrEmpty(model.srtDirections))
             {
