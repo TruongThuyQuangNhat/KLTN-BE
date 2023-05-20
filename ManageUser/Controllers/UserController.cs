@@ -114,7 +114,12 @@ namespace ManageUser.Controllers
         [Route("get/{Id}")]
         public async Task<IActionResult> GetOne(string Id)
         {
-            var userInfo = await _appDbContext.UserInfo.FindAsync(Guid.Parse(Id));
+            var user = await _userManager.FindByIdAsync(Id);
+            if (user == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "Error", Message = "User không tồn tại!" });
+            }
+            var userInfo = _appDbContext.UserInfo.Where(i => i.FromUserId == Guid.Parse(user.Id));
             if (userInfo == null)
             {
                 return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "Error", Message = "User không tồn tại!" });
