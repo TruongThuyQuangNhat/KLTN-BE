@@ -35,5 +35,6 @@ namespace ManageUser.Authentication
         public DbSet<SalaryOfMonth> SalaryOfMonth { get; set; }
         public DbSet<Position> Position { get; set; }
         public DbSet<HistoryOfSalary> HistoryOfSalary { get; set; }
+        public DbSet<Tasks> Tasks { get; set; }
     }
 }
