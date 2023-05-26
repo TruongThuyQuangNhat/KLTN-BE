@@ -55,8 +55,8 @@ namespace ManageUser.Controllers
         }
 
         [HttpGet]
-        [Route("get")]
-        public async Task<IActionResult> getRolesOfUser([FromBody] string Id)
+        [Route("get/{Id}")]
+        public async Task<IActionResult> getRolesOfUser(string Id)
         {
             var user = await _userManager.FindByIdAsync(Id);
             if (user == null)

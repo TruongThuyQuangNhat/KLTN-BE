@@ -79,7 +79,7 @@ namespace ManageUser.Controllers
         [Route("get/{Id}")]
         public async Task<IActionResult> GetOne(string Id)
         {
-            var sa = await _appDbContext.SalaryOfMonth.FindAsync(Guid.Parse(Id));
+            var sa = _appDbContext.SalaryOfMonth.Where(i => i.FromUserId.ToString() == Id).FirstOrDefault();
             if (sa == null)
             {
                 return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "Error", Message = "Thông tin Lương Tháng không tồn tại!" });
