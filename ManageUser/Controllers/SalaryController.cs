@@ -151,8 +151,7 @@ namespace ManageUser.Controllers
                             Id = s.Id,
                             FromUserId = s.FromUserId,
                             Avatar = u.Avatar,
-                            FirstName = u.FirstName,
-                            LastName = u.LastName,
+                            Name = u.LastName + " " + u.FirstName,
                             Money = s.Money,
                             FuelAllowance = s.FuelAllowance,
                             LunchAllowance = s.LunchAllowance
@@ -196,8 +195,7 @@ namespace ManageUser.Controllers
             public Guid Id { get; set; }
             public Guid FromUserId { get; set; }
             public string Avatar { get; set; }
-            public string FirstName { get; set; }
-            public string LastName { get; set; }
+            public string Name { get; set; }
             public string Money { get; set; }
             public string FuelAllowance { get; set; }
             public string LunchAllowance { get; set; }

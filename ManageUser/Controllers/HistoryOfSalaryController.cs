@@ -242,8 +242,7 @@ namespace ManageUser.Controllers
                             Id = s.Id,
                             FromUserId = s.FromUserId,
                             Avatar = u.Avatar,
-                            FirstName = u.FirstName,
-                            LastName = u.LastName,
+                            Name = u.LastName + " " + u.FirstName,
                             Money = s.Money,
                             FuelAllowance = s.FuelAllowance,
                             LunchAllowance = s.LunchAllowance
