@@ -9,7 +9,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
+using System.Data;
 
 namespace ManageUser.Controllers
 {

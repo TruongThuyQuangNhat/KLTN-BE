@@ -12,7 +12,6 @@ using System.Data;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace ManageUser.Controllers
 {
@@ -159,6 +158,18 @@ namespace ManageUser.Controllers
             {
                 return StatusCode(StatusCodes.Status200OK, userInfo);
             }
+        }
+
+        [HttpGet]
+        [Route("getcurrent")]
+        public async Task<IActionResult> getCurrent()
+        {
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "Error", Message = "Không tìm thấy user." });
+            }
+            return StatusCode(StatusCodes.Status200OK, user);
         }
 
         [HttpPost]
