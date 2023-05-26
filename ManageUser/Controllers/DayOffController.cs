@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace ManageUser.Controllers
 {
@@ -15,13 +16,16 @@ namespace ManageUser.Controllers
     [ApiController]
     public class DayOffController : ControllerBase
     {
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _appDbContext;
 
         public DayOffController(
-            ApplicationDbContext appDbContext
+            ApplicationDbContext appDbContext,
+            UserManager<ApplicationUser> userManager
         )
         {
             _appDbContext = appDbContext;
+            _userManager = userManager;
         }
 
         [HttpPost]
@@ -34,7 +38,6 @@ namespace ManageUser.Controllers
             dayOff.DateOff = model.DateOff;
             dayOff.HalfDate = model.HalfDate;
             dayOff.Approval = "1";
-            dayOff.ApprovelId = model.ApprovelId;
             dayOff.Note = model.Note;
             dayOff.SabbaticalDayOff = model.SabbaticalDayOff;
             dayOff.CreateOn = DateTime.Now;
@@ -77,9 +80,10 @@ namespace ManageUser.Controllers
             {
                 return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "Error", Message = "Ngày Nghỉ không tồn tại!" });
             }
-
+            var user = await _userManager.GetUserAsync(HttpContext.User);
             dayOff.Approval = model.status;
             dayOff.ModifyOn = DateTime.Now;
+            dayOff.ApprovelId = Guid.Parse(user.Id);
             _appDbContext.Update(dayOff);
             await _appDbContext.SaveChangesAsync();
             return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "Cập nhật trạng thái Ngày Nghỉ thành công." });
@@ -122,14 +126,15 @@ namespace ManageUser.Controllers
 
         [HttpPost]
         [Route("getlist")]
-        public response<DayOff> GetList([FromBody] GridModel model)
+        public response<ResDayOff> GetList([FromBody] GridModel model)
         {
             var dayOff = _appDbContext.DayOff.ToList();
+            var users = _appDbContext.User.ToList();
             if (model.listFilter.Count != 0)
             {
                 model.listFilter.ForEach(i =>
                 {
-                    if (!String.IsNullOrEmpty(i.filterDirections) && !String.IsNullOrEmpty(i.filterData))
+                    if (!String.IsNullOrEmpty(i.filterDirections))
                     {
                         switch (i.filterColumns)
                         {
@@ -148,11 +153,18 @@ namespace ManageUser.Controllers
                             case "Approval":
                                 dayOff = _appDbContext.DayOff.FromSqlRaw("SELECT * FROM public.\"DayOff\" WHERE \"Approval\"" + i.filterDirections + "'" + i.filterData + "'").ToList();
                                 break;
+                        }
+                    } else if (!String.IsNullOrEmpty(i.filterData))
+                    {
+                        switch (i.filterColumns)
+                        {
                             case "FromDate":
-                                dayOff = _appDbContext.DayOff.FromSqlRaw("SELECT * FROM public.\"DayOff\" WHERE \"DateOff\" >= '" + i.filterData + "'").ToList();
+                                var date = Convert.ToDateTime(i.filterData);
+                                dayOff = dayOff.Where(d => d.DateOff >= date).ToList();
                                 break;
                             case "ToDate":
-                                dayOff = _appDbContext.DayOff.FromSqlRaw("SELECT * FROM public.\"DayOff\" WHERE \"DateOff\" <= '" + i.filterData + "'").ToList();
+                                var date2 = Convert.ToDateTime(i.filterData);
+                                dayOff = dayOff.Where(d => d.DateOff <= date2).ToList();
                                 break;
                         }
                     }
@@ -166,14 +178,14 @@ namespace ManageUser.Controllers
             {
                 switch (model.srtColumns)
                 {
-                    case "CreateOn":
+                    case "DateOff":
                         if (model.srtDirections == "desc")
                         {
-                            dayOff = dayOff.OrderByDescending(u => u.CreateOn).ToList();
+                            dayOff = dayOff.OrderByDescending(u => u.DateOff).ToList();
                         }
                         else if (model.srtDirections == "asc")
                         {
-                            dayOff = dayOff.OrderBy(u => u.CreateOn).ToList();
+                            dayOff = dayOff.OrderBy(u => u.DateOff).ToList();
                         }
                         break;
                 }
@@ -184,9 +196,26 @@ namespace ManageUser.Controllers
                 dayOff = dayOff.Skip(model.pageSize * model.page).Take(model.pageSize).ToList();
             }
 
-            response<DayOff> result = new response<DayOff>()
+            var resDayOff = from i in dayOff
+                            join u in users on i.FromUserId.ToString() equals u.Id
+                            select new ResDayOff
+                            {
+                                Id = i.Id,
+                                Name = u.LastName + " " + u.FirstName,
+                                DateOff = i.DateOff,
+                                HalfDate = i.HalfDate,
+                                Approval = i.Approval,
+                                Note = i.Note,
+                                ApprovelId = i.ApprovelId.ToString(),
+                                SabbaticalDayOff = i.SabbaticalDayOff,
+                                CreateOn = i.CreateOn,
+                                ModifyOn = i.ModifyOn
+
+                            };
+
+            response <ResDayOff> result = new response<ResDayOff>()
             {
-                data = dayOff,
+                data = resDayOff,
                 dataCount = dayOff.Count(),
                 page = model.page + 1,
                 pageSize = model.pageSize,
@@ -222,6 +251,20 @@ namespace ManageUser.Controllers
             public Guid Id { get; set; }
             [RegularExpression("^(1|2|3)$")]
             public string status { get; set; }
+        }
+
+        public class ResDayOff
+        {
+            public Guid Id { get; set; }
+            public string Name { get; set; }
+            public DateTime DateOff { get; set; }
+            public string HalfDate { get; set; }
+            public string Approval { get; set; }
+            public string Note { get; set; }
+            public string ApprovelId { get; set; }
+            public bool SabbaticalDayOff { get; set; }
+            public DateTime CreateOn { get; set; }
+            public DateTime ModifyOn { get; set; }
         }
     }
 }
