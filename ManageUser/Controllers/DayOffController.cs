@@ -86,7 +86,11 @@ namespace ManageUser.Controllers
             {
                 return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "Error", Message = "Ngày Nghỉ không tồn tại!" });
             }
-            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "Error", Message = "Không tìm thấy user." });
+            }
             dayOff.Approval = model.status;
             dayOff.ModifyOn = DateTime.Now;
             dayOff.ApprovelId = Guid.Parse(user.Id);
@@ -119,14 +123,29 @@ namespace ManageUser.Controllers
         [Route("get/{Id}")]
         public async Task<IActionResult> GetOne(string Id)
         {
-            var dayOff = await _appDbContext.DayOff.FindAsync(Guid.Parse(Id));
-            if (dayOff == null)
+            var Valued = await _appDbContext.DayOff.FindAsync(Guid.Parse(Id));
+            var user = _appDbContext.User;
+            if (Valued == null)
             {
                 return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "Error", Message = "Ngày Nghỉ không tồn tại!" });
             }
             else
             {
-                return StatusCode(StatusCodes.Status200OK, dayOff);
+                var u = user.Where(i => i.Id == Valued.FromUserId.ToString()).FirstOrDefault();
+                var u2 = user.Where(i => i.Id == Valued.ApprovelId.ToString()).FirstOrDefault();
+                return StatusCode(StatusCodes.Status200OK, new
+                {
+                    Id= Valued.Id,
+                    Name= u.LastName + " " + u.FirstName,
+                    Avatar = u.Avatar,
+                    DateOff = Valued.DateOff,
+                    HalfDate = Valued.HalfDate,
+                    Approval = Valued.Approval,
+                    Note = Valued.Note,
+                    Name2 = u2!=null?(u2.LastName + " " + u2.FirstName):null,
+                    Avatar2 = u2!=null?u2.Avatar:null,
+                    SabbaticalDayOff = Valued.SabbaticalDayOff,
+                });
             }
         }
 
@@ -222,6 +241,7 @@ namespace ManageUser.Controllers
                         break;
                 }
             }
+            dayOff = dayOff.OrderByDescending(u => u.CreateOn).ToList();
             var data = dayOff;
             if (model.pageLoading)
             {
@@ -270,11 +290,9 @@ namespace ManageUser.Controllers
         public class UpdateModel
         {
             public Guid Id { get; set; }
-            public Guid FromUserId { get; set; }
             public DateTime DateOff { get; set; }
             public string HalfDate { get; set; }
             public string Note { get; set; }
-            public Guid ApprovelId { get; set; }
             public bool SabbaticalDayOff { get; set; }
         }
 
