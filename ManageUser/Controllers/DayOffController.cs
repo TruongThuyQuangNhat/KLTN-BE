@@ -9,6 +9,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace ManageUser.Controllers
 {
@@ -32,9 +33,14 @@ namespace ManageUser.Controllers
         [Route("create")]
         public async Task<IActionResult> Create([FromBody] CreateModel model)
         {
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            if(user == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "Error", Message = "Không tìm thấy user." });
+            }
             DayOff dayOff = new DayOff();
             dayOff.Id = Guid.NewGuid();
-            dayOff.FromUserId = model.FromUserId;
+            dayOff.FromUserId = Guid.Parse(user.Id);
             dayOff.DateOff = model.DateOff;
             dayOff.HalfDate = model.HalfDate;
             dayOff.Approval = "1";
@@ -122,6 +128,32 @@ namespace ManageUser.Controllers
             {
                 return StatusCode(StatusCodes.Status200OK, dayOff);
             }
+        }
+
+        [HttpGet]
+        [Route("getSabbatical")]
+        public async Task<IActionResult> GetNumberOfSabbatical()
+        {
+            Double number = 0;
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "Error", Message = "Không tìm thấy user." });
+            }
+            var dayOff = _appDbContext.DayOff.ToList();
+            var year = DateTime.Now.Year;
+            dayOff = dayOff.Where(i => i.FromUserId.ToString() == user.Id).Where(i => i.DateOff.Year == year).ToList();
+            foreach(var i in dayOff)
+            {
+                if(i.HalfDate == "1" || i.HalfDate == "2")
+                {
+                    number = number + 0.5;
+                } else if(i.HalfDate == "3")
+                {
+                    number = number + 1;
+                }
+            }
+            return StatusCode(StatusCodes.Status200OK, number);
         }
 
         [HttpPost]
