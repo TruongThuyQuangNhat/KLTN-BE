@@ -63,27 +63,58 @@ namespace ManageUser.Controllers
                 userInfo.Sex = model.Sex;
                 userInfo.Address = model.Address;
                 userInfo.Age = model.Age;
-                userInfo.BirthDay = model.BirthDay;
-                userInfo.DateStartWork = model.DateStartWork;
+                if(model.BirthDay != null)
+                {
+                    userInfo.BirthDay = model.BirthDay;
+                }
+                if(model.DateStartWork != null)
+                {
+                    userInfo.DateStartWork = model.DateStartWork;
+                }
                 userInfo.CCCDNumber = model.CCCDNumber;
-                userInfo.CCCDIssueDate = model.CCCDIssueDate;
+                if(model.CCCDIssueDate != null)
+                {
+                    userInfo.CCCDIssueDate = model.CCCDIssueDate;
+                }
                 userInfo.CCCDAddress = model.CCCDAddress;
                 userInfo.BHXHNumber = model.BHXHNumber;
-                userInfo.BHXHIssueDate = model.BHXHIssueDate;
-                userInfo.BHXHStartDate = model.BHXHStartDate;
+                if(model.BHXHIssueDate != null)
+                {
+                    userInfo.BHXHIssueDate = model.BHXHIssueDate;
+                }
+                if(model.BHXHStartDate != null)
+                {
+                    userInfo.BHXHStartDate = model.BHXHStartDate;
+                }
                 userInfo.BHYTNumber = model.BHYTNumber;
-                userInfo.BHYTIssueDate = model.BHYTIssueDate;
+                if (model.BHYTIssueDate != null)
+                {
+                    userInfo.BHYTIssueDate = model.BHYTIssueDate;
+                }
                 userInfo.BHYTAddress = model.BHYTAddress;
                 userInfo.BHTNNumber = model.BHTNNumber;
-                userInfo.BHTNIssueDate = model.BHTNIssueDate;
+                if (model.BHTNIssueDate != null)
+                {
+                    userInfo.BHTNIssueDate = model.BHTNIssueDate;
+                }
                 userInfo.SLDNumber = model.SLDNumber;
                 userInfo.SLDAddress = model.SLDAddress;
-                userInfo.SLDIssueDate = model.SLDIssueDate;
+                if(model.SLDIssueDate != null)
+                {
+                    userInfo.SLDIssueDate = model.SLDIssueDate;
+                }
                 userInfo.BankNumber = model.BankNumber;
                 userInfo.BankName = model.BankName;
+                userInfo.BankAccountName = model.BankAccountName;
                 userInfo.HDLDNumber = model.HDLDNumber;
-                userInfo.HDLDStartDate = model.HDLDStartDate;
-                userInfo.HDLDEndDate = model.HDLDEndDate;
+                if(model.HDLDStartDate != null)
+                {
+                    userInfo.HDLDStartDate = model.HDLDStartDate;
+                }
+                if(model.HDLDEndDate != null)
+                {
+                    userInfo.HDLDEndDate = model.HDLDEndDate;
+                }
                 userInfo.ModifyOn = DateTime.Now;
 
                 _appDbContext.Update(userInfo);

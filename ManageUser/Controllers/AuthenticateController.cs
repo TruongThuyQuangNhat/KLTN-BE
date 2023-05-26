@@ -126,6 +126,7 @@ namespace ManageUser.Controllers
                 PhoneNumber = model.PhoneNumber,
                 CreateOn = DateTime.Now,
             };
+            
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
             {
@@ -134,6 +135,23 @@ namespace ManageUser.Controllers
             UserInfo ui = new UserInfo();
             ui.Id = Guid.NewGuid();
             ui.FromUserId = Guid.Parse(user.Id);
+            ui.Sex = "";
+            ui.Address = "";
+            ui.Age = 0;
+            ui.CCCDNumber = "";
+            ui.CCCDAddress = "";
+            ui.BHXHNumber = "";
+            ui.BHTNNumber = "";
+            ui.BHYTNumber = "";
+            ui.BHYTAddress = "";
+            ui.SLDNumber = "";
+            ui.SLDAddress = "";
+            ui.BankNumber = "";
+            ui.BankAccountName = "";
+            ui.BankName = "";
+            ui.HDLDNumber = "";
+            ui.CreateOn = DateTime.Now;
+            ui.ModifyOn = DateTime.Now;
             await _appDbContext.UserInfo.AddAsync(ui);
             await _appDbContext.SaveChangesAsync();
 
